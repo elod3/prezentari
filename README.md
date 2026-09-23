@@ -34,9 +34,18 @@ Online (GitHub Pages): `https://elod3.github.io/prezentare..../`
 - Fonturile sunt găzduite local (`assets/fonts`, subseturi latin + latin-ext pentru diacritice). Fonturile Anthropic nu sunt libere, așa că Newsreader și Hanken Grotesk țin locul lor.
 - La Bodoni, cifrele și cratima sunt linii foarte subțiri și dispar pe proiector, așa că `bodoni-core.css` le trimite pe Newsreader.
 
-## GitHub Pages
+## GitHub Pages — DE FĂCUT LA LAPTOP
 
-`.github/workflows/pages.yml` publică site-ul la fiecare push pe `main`. O singură dată: **Settings → Pages → Source: GitHub Actions**. Repo-ul e privat, iar Pages pe repo privat cere GitHub Pro; altfel repo-ul trebuie făcut public.
+> **Site-ul nu e încă online pe GitHub Pages.** Workflow-ul există, dar Pages nu e pornit în setări
+> (primul deploy a picat cu „Get Pages site failed”). Aplicația GitHub de pe telefon n-are setarea asta.
+
+1. `github.com/elod3/prezentare..../settings/pages` → **Build and deployment → Source: GitHub Actions**.
+2. Dacă cere GitHub Pro (repo-ul e privat): **Settings → General → Danger Zone → Change visibility → Public**, apoi pasul 1.
+3. **Actions → GitHub Pages → Run workflow** (sau orice push pe `main`).
+4. Site-ul apare la `https://elod3.github.io/prezentare..../`.
+
+Workflow-ul (`.github/workflows/pages.yml`) publică apoi singur la fiecare push pe `main`.
+Până atunci, meniul e publicat și ca pagină privată pe claude.ai: https://claude.ai/artifact/27wtL2XV2zXSTfcG3NaKtf (o partajezi din meniul Share al paginii).
 
 ## Structură
 
