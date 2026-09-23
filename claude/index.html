@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude, pe bune</title>
+<meta name="description" content="Claude, Claude Code, API key, MCP, skills: ce sunt, cum merg, cât costă.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/fonts/newsreader.css">
+<link rel="stylesheet" href="../assets/fonts/hanken.css">
+<link rel="stylesheet" href="../assets/fonts/jetbrains.css">
+<link rel="stylesheet" href="../deck/deck.css">
+<style>
+/* Paleta Anthropic: ivory, slate, clay. Fonturile lor (Anthropic Sans/Serif) nu sunt libere,
+   așa că: Newsreader ține locul serif-ului, Hanken Grotesk pe al sans-ului. */
+:root {
+  --ivory: #faf9f5; --ivory2: #f0eee6; --oat: #e3dacc; --line: #e2dfd3;
+  --slate: #141413; --slate2: #3d3d3a; --cloud: #87867f; --cloud2: #b0aea5;
+  --clay: #d97757; --clay-d: #c6613f; --kraft: #d4a27f; --olive: #788c5d; --sky: #6a9bcc; --fig: #c46686; --cactus: #bcd1ca; --heather: #cbcadb;
+  --term: #1f1e1d;
+  --bg-outer: #e9e6dc; --bg: var(--ivory); --ink: var(--slate);
+  --f-body: 'Hanken Grotesk', system-ui, sans-serif;
+  --f-serif: 'Newsreader', Georgia, serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --hint: #b0aea5;
+}
+.slide { padding: 92px 120px 90px; }
+h1, h2 { font-family: var(--f-serif); font-weight: 400; letter-spacing: -.025em; margin: 0; line-height: 1; }
+h1 { font-size: 150px; }
+h2 { font-size: 88px; }
+h2 em, h1 em { font-style: italic; color: var(--clay); }
+.sub { font: 400 24px/1.4 var(--f-body); color: var(--cloud); margin-top: 18px; }
+.mono { font-family: var(--f-mono); }
+
+/* subsol: scânteia + secțiunea + numărul */
+.foot { position: absolute; left: 120px; right: 120px; bottom: 34px; display: flex; align-items: center; gap: 12px; font: 500 15px var(--f-body); color: var(--cloud); z-index: 3; }
+.foot svg { width: 18px; height: 18px; fill: var(--clay); }
+.foot .n { margin-left: auto; font-family: var(--f-mono); font-size: 14px; }
+.foot .bar { flex: 1; height: 2px; background: var(--line); position: relative; margin: 0 16px; }
+.foot .bar i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--progress, 0) * 100%); background: var(--clay); transition: width .5s cubic-bezier(.2,.8,.2,1); }
+
+.spark { fill: var(--clay); }
+.spin-slow { transform-origin: center; transform-box: fill-box; }
+.is-on .spin-slow { animation: spin 24s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes breathe { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.08) rotate(20deg); } }
+
+/* terminal Claude Code */
+.cc { background: var(--term); color: #e8e6dc; border-radius: 14px; font: 400 21px/1.55 var(--f-mono); padding: 26px 30px; position: relative; }
+.cc .ln { display: block; white-space: pre; }
+.cc .dim { color: #8a887f; }
+.cc .cl { color: var(--clay); }
+.cc .gr { color: #8fbf7f; }
+.cc .rd { color: #e0707a; }
+.cc .bl { color: #8fb3d9; }
+.cc .ye { color: #e5c07b; }
+
+/* ——— 1 copertă ——— */
+.cover .big-spark { position: absolute; right: 120px; top: 110px; width: 560px; height: 560px; }
+.cover h1 { margin-top: 170px; font-size: 168px; }
+.cover .status { position: absolute; left: 120px; bottom: 120px; font: 500 26px var(--f-mono); color: var(--clay); display: flex; gap: 14px; align-items: center; }
+.cover .status .glyph { display: inline-block; width: 1.1em; text-align: center; }
+.cover .status .w { color: var(--slate2); }
+
+/* ——— 2 next token ——— */
+.nt-sentence { position: absolute; left: 120px; top: 320px; font: 400 76px/1.1 var(--f-mono); letter-spacing: -.03em; }
+.nt-sentence .blank { display: inline-block; min-width: 260px; border-bottom: 4px solid var(--clay); color: var(--clay); font-style: italic; }
+.bars { position: absolute; left: 120px; top: 480px; width: 900px; display: grid; gap: 14px; }
+.bars div { display: grid; grid-template-columns: 200px 1fr 80px; align-items: center; gap: 20px; font: 500 26px var(--f-serif); }
+.bars i { display: block; height: 30px; border-radius: 4px; background: var(--c, var(--oat)); transform-origin: left; }
+.is-on .bars i { animation: grow 1s cubic-bezier(.2,.8,.2,1) var(--d) both; }
+@keyframes grow { from { transform: scaleX(0); } }
+.bars span { font: 500 20px var(--f-mono); color: var(--cloud); text-align: right; }
+.nt-note { position: absolute; right: 120px; top: 330px; width: 420px; font: 400 24px/1.45 var(--f-body); color: var(--slate2); }
+.nt-note b { color: var(--slate); }
+
+/* ——— 3 tokeni ——— */
+.toks { position: absolute; left: 120px; right: 120px; top: 300px; display: flex; flex-wrap: wrap; gap: 6px; font: 400 54px var(--f-serif); }
+.toks span { padding: 4px 8px; border-radius: 8px; background: var(--c); }
+.ctx { position: absolute; left: 120px; right: 120px; bottom: 140px; }
+.ctx .row { display: grid; grid-template-columns: 260px 1fr; align-items: center; gap: 26px; margin-top: 18px; font: 500 22px var(--f-body); }
+.ctx .row small { display: block; color: var(--cloud); font-size: 17px; font-weight: 400; }
+.ctx .track { height: 40px; background: var(--ivory2); border-radius: 6px; position: relative; overflow: hidden; }
+.ctx .fill { position: absolute; inset: 0 auto 0 0; background: var(--c); border-radius: 6px; transform-origin: left; }
+.is-on .ctx .fill { animation: grow 1.6s cubic-bezier(.2,.8,.2,1) var(--d) both; }
+.ctx .fill b { position: absolute; right: 14px; top: 8px; font: 600 18px var(--f-mono); color: var(--slate); white-space: nowrap; }
+
+/* ——— 4 familia ——— */
+.fam { position: absolute; left: 120px; right: 120px; top: 230px; height: 560px; display: grid; grid-template-columns: .8fr 1fr 1.25fr 1.5fr; gap: 26px; align-items: end; }
+.m { display: flex; flex-direction: column; justify-content: flex-end; }
+.m .orb { border-radius: 50%; background: var(--c); margin-bottom: 26px; display: grid; place-items: center; aspect-ratio: 1; }
+.m .orb svg { width: 36%; fill: var(--slate); opacity: .85; }
+.m b { font: 400 44px var(--f-serif); letter-spacing: -.02em; }
+.m code { font: 500 16px var(--f-mono); color: var(--cloud); margin-top: 6px; }
+.m .role { font: 500 19px var(--f-body); color: var(--slate2); margin-top: 12px; }
+.m .price { font: 600 22px var(--f-mono); margin-top: 16px; border-top: 2px solid var(--line); padding-top: 12px; }
+.m .price span { color: var(--cloud); font-weight: 400; font-size: 16px; }
+.fam-note { position: absolute; right: 120px; top: 110px; font: 400 18px/1.5 var(--f-body); color: var(--cloud); text-align: right; }
+
+/* ——— 5 trei uși ——— */
+.doors { position: absolute; left: 120px; right: 120px; top: 270px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 50px; }
+.door svg { width: 100%; height: 330px; display: block; }
+.door b { display: block; font: 400 46px var(--f-serif); margin-top: 22px; letter-spacing: -.02em; }
+.door span { display: block; font: 400 21px/1.4 var(--f-body); color: var(--cloud); margin-top: 8px; }
+.door .who { display: inline-block; margin-top: 16px; font: 600 16px var(--f-mono); padding: 5px 12px; border-radius: 99px; background: var(--ivory2); color: var(--slate2); }
+
+/* ——— 6 abonament vs API ——— */
+.vs { position: absolute; left: 120px; right: 120px; top: 290px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
+.vs h3 { font: 400 58px var(--f-serif); margin: 0 0 8px; letter-spacing: -.02em; }
+.vs p { font: 400 22px/1.45 var(--f-body); color: var(--slate2); margin: 0 0 26px; }
+.card-sub { height: 230px; border-radius: 18px; background: var(--slate); color: var(--ivory); padding: 28px 32px; position: relative; overflow: hidden; }
+.card-sub .chip { width: 64px; height: 48px; border-radius: 8px; background: var(--kraft); }
+.card-sub b { position: absolute; left: 32px; bottom: 28px; font: 400 40px var(--f-serif); }
+.card-sub .per { position: absolute; right: 32px; bottom: 34px; font: 500 20px var(--f-mono); color: var(--cloud2); }
+.card-sub svg { position: absolute; right: 26px; top: 22px; width: 60px; fill: var(--clay); }
+.meter { height: 230px; border-radius: 18px; border: 3px solid var(--slate); padding: 22px 28px; font-family: var(--f-mono); display: flex; flex-direction: column; justify-content: space-between; }
+.meter .digits { font: 700 76px var(--f-mono); letter-spacing: -.02em; }
+.meter .digits span { color: var(--clay); }
+.meter .lbl { display: flex; justify-content: space-between; font: 500 18px var(--f-mono); color: var(--cloud); }
+.vs ul { list-style: none; padding: 0; margin: 24px 0 0; font: 400 21px/1.7 var(--f-body); color: var(--slate2); }
+.vs li::before { content: '— '; color: var(--clay); }
+
+/* ——— 7 Claude Code ——— */
+.cc-cover h2 { font-size: 120px; margin-top: 60px; }
+.cc-cover .shots { position: absolute; right: 90px; top: 110px; width: 760px; height: 680px; }
+.cc-cover .shots img { position: absolute; width: 470px; border-radius: 16px; box-shadow: 0 30px 60px -20px rgba(20,20,19,.35); }
+.cc-cover .shots img:nth-child(1) { right: 0; top: 0; }
+.cc-cover .shots img:nth-child(2) { left: 0; bottom: 0; }
+.cc-cover .cap { position: absolute; right: 90px; top: 70px; font: 400 14px var(--f-body); color: var(--cloud2); }
+.cc-cover .install { position: absolute; left: 120px; bottom: 150px; }
+.cc-cover .install .cc { font-size: 17px; padding: 16px 22px; }
+
+/* ——— 8 bucla ——— */
+.loop { position: absolute; left: 120px; top: 110px; width: 700px; height: 700px; }
+.loop text { font-family: var(--f-serif); }
+.loop-side { position: absolute; right: 120px; top: 230px; width: 560px; }
+.loop-side h2 { font-size: 80px; }
+.loop-side p { font: 400 24px/1.5 var(--f-body); color: var(--slate2); margin-top: 30px; }
+.loop-side p b { color: var(--clay); font-weight: 600; }
+.orbit { offset-path: path('M 350 90 A 260 260 0 1 1 349.9 90'); offset-rotate: 0deg; }
+.is-on .orbit { animation: orbit 6s linear infinite; }
+@keyframes orbit { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+
+/* ——— 9 replay ——— */
+.replay { position: absolute; left: 120px; right: 120px; top: 90px; height: 680px; font-size: 22px; padding: 30px 36px; }
+.replay .ln { opacity: 0; }
+.replay .ln.show { opacity: 1; }
+.replay .input { position: absolute; left: 30px; right: 30px; bottom: 26px; border: 1px solid #4a4843; border-radius: 10px; padding: 10px 16px; color: #8a887f; }
+.replay .mode { position: absolute; left: 34px; bottom: -2px; font-size: 15px; color: #8a887f; transform: translateY(100%); padding-top: 8px; }
+
+/* ——— 10 unelte ——— */
+.tools { position: absolute; left: 120px; top: 270px; width: 800px; display: flex; flex-wrap: wrap; gap: 14px; }
+.tool { font: 600 32px var(--f-mono); padding: 18px 26px; border-radius: 12px; background: var(--ivory2); border: 2px solid var(--line); }
+.tool small { display: block; font: 400 16px var(--f-body); color: var(--cloud); margin-top: 4px; }
+.modes { position: absolute; right: 120px; top: 280px; width: 540px; }
+.modes h4 { font: 600 16px var(--f-mono); color: var(--cloud); margin: 0 0 14px; letter-spacing: .02em; }
+.mode-row { display: grid; grid-template-columns: 26px 1fr; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); font: 500 24px var(--f-body); }
+.mode-row i { width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--c); }
+.mode-row.on i { background: var(--c); }
+.mode-row span { font-weight: 400; color: var(--cloud); font-size: 18px; margin-left: 8px; }
+.keys { position: absolute; left: 120px; right: 120px; bottom: 120px; display: flex; gap: 40px; font: 400 20px var(--f-body); color: var(--slate2); align-items: center; }
+kbd { font: 600 17px var(--f-mono); padding: 6px 12px; border-radius: 8px; background: var(--slate); color: var(--ivory); margin-right: 8px; }
+
+/* ——— 11 atelier ——— */
+.shop { position: absolute; left: 120px; right: 120px; top: 270px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 250px 250px; gap: 22px; }
+.drawer { border-radius: 18px; padding: 26px 28px; background: var(--c); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.drawer b { font: 400 42px var(--f-serif); letter-spacing: -.02em; }
+.drawer span { font: 400 20px/1.35 var(--f-body); color: var(--slate2); margin-top: 8px; max-width: 300px; }
+.drawer code { margin-top: auto; font: 500 16px var(--f-mono); color: var(--slate); background: rgba(250,249,245,.6); padding: 6px 10px; border-radius: 6px; align-self: flex-start; }
+.drawer svg { position: absolute; right: 22px; top: 22px; width: 76px; height: 76px; }
+
+/* ——— 12 MCP ——— */
+.mcp { position: absolute; left: 120px; right: 120px; top: 110px; height: 700px; }
+.mcp svg { width: 100%; height: 100%; overflow: visible; }
+.mcp text { font-family: var(--f-body); }
+.flow-dot { offset-rotate: 0deg; }
+.is-on .flow-dot { animation: orbit 2.4s cubic-bezier(.6,0,.4,1) infinite; animation-delay: var(--fd, 0s); }
+
+/* ——— 13 cheia ——— */
+.key-cover { background: var(--slate); color: var(--ivory); }
+.key-cover h2 { font-size: 150px; margin-top: 110px; color: var(--ivory); }
+.key-cover .sub { color: var(--cloud2); font-size: 30px; }
+.key-cover .foot { color: var(--cloud); }
+.key-cover .foot .bar { background: #3d3d3a; }
+.bigkey { position: absolute; right: 70px; top: 300px; width: 740px; }
+.is-on .bigkey .turn { transform-origin: 170px 250px; animation: jiggle 3s ease-in-out 1s infinite; }
+@keyframes jiggle { 0%, 60%, 100% { transform: rotate(0); } 70% { transform: rotate(-8deg); } 80% { transform: rotate(5deg); } 90% { transform: rotate(-2deg); } }
+.keystr { position: absolute; left: 120px; bottom: 150px; font: 500 34px var(--f-mono); color: var(--clay); }
+.keystr span { color: var(--cloud); }
+
+/* ——— 14 fluxul ——— */
+.req { position: absolute; left: 120px; right: 120px; top: 260px; height: 520px; }
+.req svg { width: 100%; height: 100%; overflow: visible; }
+.req text { font-family: var(--f-body); }
+.req .mono { font-family: var(--f-mono); }
+
+/* ——— 15 cod ——— */
+.code2 { position: absolute; left: 120px; right: 120px; top: 250px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 28px; }
+.code2 .cc { font-size: 18px; line-height: 1.6; padding: 42px 28px 24px; }
+.code2 .tab { position: absolute; top: 12px; left: 28px; font: 600 14px var(--f-mono); color: var(--clay); }
+.resp { position: absolute; left: 120px; right: 120px; bottom: 100px; display: flex; gap: 30px; align-items: center; font: 400 22px var(--f-body); color: var(--slate2); }
+.resp .cc { font-size: 18px; padding: 16px 24px; }
+
+/* ——— 16 reguli ——— */
+.rules { position: absolute; left: 120px; top: 280px; width: 760px; display: grid; gap: 0; }
+.rule { display: grid; grid-template-columns: 70px 1fr; gap: 20px; padding: 22px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.rule .x { font: 400 48px/1 var(--f-serif); color: var(--clay); font-style: italic; }
+.rule b { font: 400 36px var(--f-serif); letter-spacing: -.01em; display: block; }
+.rule span { font: 400 19px var(--f-body); color: var(--cloud); }
+.rule code { font: 500 18px var(--f-mono); background: var(--ivory2); padding: 2px 8px; border-radius: 5px; color: var(--slate); }
+.leak { position: absolute; right: 120px; top: 270px; width: 560px; }
+.leak .commit { border: 2px solid var(--line); border-radius: 14px; padding: 20px 22px; background: #fff; font: 400 17px/1.7 var(--f-mono); position: relative; }
+.leak .commit .add { background: #e6f0de; display: block; margin: 0 -22px; padding: 0 22px; }
+.leak .commit .bad { background: #f7e0dc; display: block; margin: 0 -22px; padding: 0 22px; color: #9b2c1f; }
+.leak .stamp { position: absolute; right: -10px; bottom: -40px; border: 5px solid #b93a2a; color: #b93a2a; font: 800 30px var(--f-body); padding: 8px 18px; border-radius: 10px; transform: rotate(-9deg); letter-spacing: .02em; opacity: 0; }
+.is-on .leak .stamp { animation: stamp .5s cubic-bezier(.3,1.6,.5,1) 1.4s both; }
+@keyframes stamp { from { opacity: 0; transform: rotate(-9deg) scale(2.2); } to { opacity: 1; transform: rotate(-9deg) scale(1); } }
+.leak p { font: 400 19px/1.5 var(--f-body); color: var(--cloud); margin-top: 70px; }
+
+/* ——— 17 scurtături ——— */
+.tips { position: absolute; left: 120px; right: 120px; top: 260px; columns: 2; column-gap: 80px; }
+.tip { break-inside: avoid; display: grid; grid-template-columns: 280px 1fr; gap: 20px; padding: 26px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.tip code { font: 600 28px var(--f-mono); color: var(--clay-d); }
+.tip span { font: 400 24px var(--f-body); color: var(--slate2); }
+
+/* ——— 18 bani ——— */
+.money { position: absolute; left: 120px; right: 120px; top: 280px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; }
+.biz svg { width: 100%; height: 300px; display: block; background: var(--ivory2); border-radius: 16px; }
+.biz b { display: block; font: 400 36px var(--f-serif); margin-top: 22px; letter-spacing: -.02em; }
+.biz span { display: block; font: 400 20px/1.4 var(--f-body); color: var(--cloud); margin-top: 8px; }
+.biz .via { display: inline-block; margin-top: 14px; font: 600 15px var(--f-mono); color: var(--clay-d); }
+
+/* ——— 19 final ——— */
+.end h2 { font-size: 132px; margin-top: 150px; max-width: 1000px; }
+.end .cc { position: absolute; left: 120px; bottom: 150px; font-size: 22px; padding: 20px 28px; }
+.end .big-spark { position: absolute; right: 120px; bottom: 120px; width: 380px; height: 380px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="spark" viewBox="0 0 24 24"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></symbol>
+</svg>
+<div class="stage">
+
+  <!-- 1 · copertă -->
+  <section class="slide cover" data-s="Claude">
+    <svg class="big-spark spin-slow" aria-hidden="true"><use href="#spark" class="spark"/></svg>
+    <h1 class="in">Claude,<br><em>pe bune.</em></h1>
+    <div class="status in" style="--d:.5s"><span class="glyph" id="glyph">✻</span><span class="w" id="word">Pondering…</span></div>
+  </section>
+
+  <!-- 2 · următorul cuvânt -->
+  <section class="slide" data-s="ce e">
+    <h2 class="in">Ghicește <em>următorul</em> cuvânt.</h2>
+    <p class="sub in" style="--d:.1s">de miliarde de ori · asta e tot trucul</p>
+    <div class="nt-sentence in" style="--d:.3s">sudo pacman <span class="blank typed mono" style="--d:2.1s;font-size:62px">-Syu</span></div>
+    <div class="bars">
+      <div class="in" style="--d:.6s"><em>-Syu</em><i style="--c:var(--clay);width:88%;--d:.7s"></i><span>88%</span></div>
+      <div class="in" style="--d:.7s">-S<i style="width:7%;--d:.8s"></i><span>7%</span></div>
+      <div class="in" style="--d:.8s">-Sy<i style="width:3%;--d:.9s"></i><span>3%</span></div>
+      <div class="in" style="--d:.9s">please<i style="width:.6%;--d:1s"></i><span>0.6%</span></div>
+    </div>
+    <p class="nt-note in" style="--d:1.4s"><b>Model de limbaj</b> = rețea antrenată pe text cât o bibliotecă. Alege, cuvânt cu cuvânt, ce urmează.</p>
+  </section>
+
+  <!-- 3 · tokeni -->
+  <section class="slide" data-s="tokeni">
+    <h2 class="in">Nu citește cuvinte.<br><em>Citește tokeni.</em></h2>
+    <div class="toks" data-stagger=".5,.07">
+      <span class="in" style="--c:#f3d5c7">Salut</span><span class="in" style="--c:#dfe7d4">,</span><span class="in" style="--c:#d8e3ee"> fă</span><span class="in" style="--c:#efdce4">-mi</span><span class="in" style="--c:#e3dacc"> un</span><span class="in" style="--c:#f3d5c7"> site</span><span class="in" style="--c:#dfe7d4"> pentru</span><span class="in" style="--c:#d8e3ee"> fri</span><span class="in" style="--c:#efdce4">zer</span><span class="in" style="--c:#e3dacc">ie</span>
+    </div>
+    <div class="ctx">
+      <div class="row in" style="--d:1.3s"><div>Fereastra de context<small>cât „ține minte” odată</small></div><div class="track"><div class="fill" style="--c:var(--oat);width:20%;--d:1.4s"><b>200K · Haiku</b></div></div></div>
+      <div class="row in" style="--d:1.5s"><div>&nbsp;<small>&nbsp;</small></div><div class="track"><div class="fill" style="--c:var(--clay);width:100%;--d:1.6s"><b style="color:#faf9f5">1.000.000 tokeni · Sonnet 5, Opus 5, Fable 5.1 ≈ 2.500 de pagini</b></div></div></div>
+    </div>
+  </section>
+
+  <!-- 4 · familia -->
+  <section class="slide" data-s="modele">
+    <h2 class="in">Familia.</h2>
+    <p class="fam-note in" style="--d:.2s">preț API · dolari per 1 milion de tokeni<br>intrare / ieșire · septembrie 2026</p>
+    <div class="fam" data-stagger=".3,.15">
+      <div class="m in"><div class="orb" style="--c:var(--cactus);width:110px;height:110px"><svg><use href="#spark"/></svg></div><b>Haiku 4.5</b><code>claude-haiku-4-5</code><span class="role">rapid, ieftin, volum mare</span><div class="price">$1 / $5</div></div>
+      <div class="m in"><div class="orb" style="--c:var(--heather);width:150px;height:150px"><svg><use href="#spark"/></svg></div><b>Sonnet 5</b><code>claude-sonnet-5</code><span class="role">calul de povară</span><div class="price">$2 / $10</div></div>
+      <div class="m in"><div class="orb" style="--c:var(--kraft);width:200px;height:200px"><svg><use href="#spark"/></svg></div><b>Opus 5</b><code>claude-opus-5</code><span class="role">cod greu, agenți</span><div class="price">$5 / $25</div></div>
+      <div class="m in"><div class="orb" style="--c:var(--clay);width:270px;height:270px"><svg><use href="#spark"/></svg></div><b>Fable 5.1</b><code>claude-fable-5-1</code><span class="role">cel mai capabil</span><div class="price">$10 / $50</div></div>
+    </div>
+  </section>
+
+  <!-- 5 · trei uși -->
+  <section class="slide" data-s="unde">
+    <h2 class="in">Trei uși.</h2>
+    <div class="doors" data-stagger=".2,.2">
+      <div class="door in">
+        <svg viewBox="0 0 400 330" aria-hidden="true">
+          <path d="M60 330 V120 A140 140 0 0 1 340 120 V330" fill="#f0eee6" stroke="#141413" stroke-width="3"/>
+          <rect x="110" y="120" width="180" height="150" rx="14" fill="#faf9f5" stroke="#141413" stroke-width="3"/>
+          <rect x="130" y="142" width="100" height="18" rx="9" fill="#e3dacc"/>
+          <rect x="170" y="172" width="100" height="18" rx="9" fill="#d97757"/>
+          <rect x="130" y="202" width="120" height="18" rx="9" fill="#e3dacc"/>
+          <rect x="126" y="238" width="148" height="20" rx="6" fill="none" stroke="#87867f" stroke-width="2"/>
+        </svg>
+        <b>claude.ai</b><span>chat · web, telefon, desktop</span><span class="who">pentru tine</span>
+      </div>
+      <div class="door in">
+        <svg viewBox="0 0 400 330" aria-hidden="true">
+          <path d="M60 330 V120 A140 140 0 0 1 340 120 V330" fill="#141413"/>
+          <text x="104" y="170" font-family="JetBrains Mono" font-size="22" fill="#d97757">✻ Welcome</text>
+          <text x="104" y="206" font-family="JetBrains Mono" font-size="18" fill="#8a887f">● Read(app.js)</text>
+          <text x="104" y="236" font-family="JetBrains Mono" font-size="18" fill="#8fbf7f">● Edit(app.js)</text>
+          <rect x="100" y="262" width="200" height="34" rx="6" fill="none" stroke="#4a4843" stroke-width="2"/>
+          <text x="112" y="285" font-family="JetBrains Mono" font-size="18" fill="#e8e6dc">&gt; ▍</text>
+        </svg>
+        <b>Claude Code</b><span>agent în terminal · scrie și rulează cod</span><span class="who">pentru proiecte</span>
+      </div>
+      <div class="door in">
+        <svg viewBox="0 0 400 330" aria-hidden="true">
+          <path d="M60 330 V120 A140 140 0 0 1 340 120 V330" fill="#f0eee6" stroke="#141413" stroke-width="3" stroke-dasharray="10 8"/>
+          <text x="200" y="175" text-anchor="middle" font-family="JetBrains Mono" font-size="40" fill="#141413">{ }</text>
+          <text x="200" y="222" text-anchor="middle" font-family="JetBrains Mono" font-size="17" fill="#87867f">POST /v1/messages</text>
+          <g transform="translate(160 244)"><rect width="80" height="40" rx="8" fill="#d97757"/><circle cx="22" cy="20" r="8" fill="#faf9f5"/><rect x="34" y="17" width="34" height="6" rx="3" fill="#faf9f5"/></g>
+        </svg>
+        <b>API</b><span>Claude în aplicația ta · cu cheie</span><span class="who">pentru clienți</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · abonament vs API -->
+  <section class="slide" data-s="cum plătești">
+    <h2 class="in">Abonament <em>sau</em> contor.</h2>
+    <div class="vs">
+      <div class="in" style="--d:.2s">
+        <h3>Pro · Max</h3>
+        <p>preț fix pe lună · claude.ai + Claude Code</p>
+        <div class="card-sub"><div class="chip"></div><svg viewBox="0 0 24 24"><use href="#spark"/></svg><b>Claude Pro</b><span class="per">/ lună</span></div>
+        <ul><li>folosești tu</li><li>limită de mesaje, nu factură</li></ul>
+      </div>
+      <div class="in" style="--d:.4s">
+        <h3>API</h3>
+        <p>plătești fix cât consumi · pe tokeni</p>
+        <div class="meter"><div class="lbl"><span>tokeni</span><span>console.anthropic.com</span></div><div class="digits">$<span id="meter">0.0000</span></div><div class="lbl"><span>in $2/M · out $10/M</span><span>Sonnet 5</span></div></div>
+        <ul><li>folosesc aplicațiile tale</li><li>1.000 de cereri mici ≈ $4</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · Claude Code -->
+  <section class="slide cc-cover" data-s="Claude Code">
+    <h2 class="in">Claude<br><em>Code.</em></h2>
+    <p class="sub in" style="--d:.2s;font-size:28px">un coleg care stă în terminal.</p>
+    <div class="shots">
+      <img class="in" style="--d:.3s" src="../assets/claude/cc-terminal.webp" alt="Claude Code în terminal: mesajul de bun venit și promptul">
+      <img class="in" style="--d:.5s" src="../assets/claude/cc-vscode.webp" alt="Claude Code în editor: citește un fișier și scrie teste">
+    </div>
+    <div class="install in" style="--d:.8s"><div class="cc"><span class="dim">$</span> curl -fsSL https://claude.ai/install.sh | bash<br><span class="dim">$</span> cd proiect &amp;&amp; <span class="cl">claude</span></div></div>
+    <span class="cap">capturi: claude.com</span>
+  </section>
+
+  <!-- 8 · bucla -->
+  <section class="slide" data-s="bucla">
+    <svg class="loop" viewBox="0 0 700 700" aria-hidden="true">
+      <circle cx="350" cy="350" r="260" fill="none" stroke="#e2dfd3" stroke-width="3"/>
+      <path class="draw" style="--d:.2s;animation-duration:2s" d="M 350 90 A 260 260 0 1 1 349.9 90" fill="none" stroke="#d97757" stroke-width="3"/>
+      <g font-size="30">
+        <g class="in" style="--d:.4s"><circle cx="350" cy="90" r="66" fill="#faf9f5" stroke="#141413" stroke-width="3"/><text x="350" y="101" text-anchor="middle">citește</text></g>
+        <g class="in" style="--d:.7s"><circle cx="597" cy="270" r="66" fill="#faf9f5" stroke="#141413" stroke-width="3"/><text x="597" y="281" text-anchor="middle">plan</text></g>
+        <g class="in" style="--d:1s"><circle cx="503" cy="560" r="66" fill="#faf9f5" stroke="#141413" stroke-width="3"/><text x="503" y="571" text-anchor="middle">scrie</text></g>
+        <g class="in" style="--d:1.3s"><circle cx="197" cy="560" r="66" fill="#faf9f5" stroke="#141413" stroke-width="3"/><text x="197" y="571" text-anchor="middle">rulează</text></g>
+        <g class="in" style="--d:1.6s"><circle cx="103" cy="270" r="66" fill="#faf9f5" stroke="#141413" stroke-width="3"/><text x="103" y="281" text-anchor="middle">verifică</text></g>
+      </g>
+      <g transform="translate(350 350)"><g class="spin-slow"><use href="#spark" class="spark" x="-70" y="-70" width="140" height="140"/></g></g>
+      <circle class="orbit" r="12" fill="#d97757" cx="0" cy="0"/>
+    </svg>
+    <div class="loop-side">
+      <h2 class="in">Bucla.</h2>
+      <p class="in" style="--d:.4s">Chat-ul îți <b>spune</b> ce să faci.<br>Agentul <b>face</b>, verifică, repetă.<br>Până merge.</p>
+    </div>
+  </section>
+
+  <!-- 9 · replay -->
+  <section class="slide" data-s="demo">
+    <div class="cc replay" id="replay">
+      <span class="ln"><span class="cl">✻</span> Welcome to <b>Claude Code</b>                           <span class="dim">~/frizeria-vlad</span></span>
+      <span class="ln"> </span>
+      <span class="ln"><span class="dim">&gt;</span> fă-mi un landing page pentru frizeria lui Vlad, cu programări</span>
+      <span class="ln"> </span>
+      <span class="ln"><span class="cl">✻ Pondering…</span></span>
+      <span class="ln"><span class="gr">●</span> <b>Read</b>(package.json)</span>
+      <span class="ln"><span class="dim">  ⎿  32 lines</span></span>
+      <span class="ln"><span class="gr">●</span> <b>Write</b>(index.html)</span>
+      <span class="ln"><span class="dim">  ⎿  Wrote 148 lines</span></span>
+      <span class="ln"><span class="gr">●</span> <b>Write</b>(programari.js)</span>
+      <span class="ln"><span class="dim">  ⎿  Wrote 61 lines</span></span>
+      <span class="ln"><span class="gr">●</span> <b>Bash</b>(npx serve .)</span>
+      <span class="ln"><span class="dim">  ⎿  Serving on </span><span class="bl">http://localhost:3000</span></span>
+      <span class="ln"> </span>
+      <span class="ln"><span class="cl">●</span> Gata. Pagina are secțiunile Servicii, Prețuri, Programare.</span>
+      <span class="ln">  Formularul trimite pe WhatsApp. Deschide linkul de mai sus.</span>
+      <div class="input">&gt; <span class="caret" style="width:.5em;background:#8a887f"></span></div>
+      <div class="mode">⏵⏵ accept edits on <span style="opacity:.6">(shift+tab to cycle)</span></div>
+    </div>
+  </section>
+
+  <!-- 10 · unelte -->
+  <section class="slide" data-s="unelte">
+    <h2 class="in">Are <em>mâini.</em></h2>
+    <div class="tools" data-stagger=".3,.06">
+      <span class="tool in">Read<small>citește fișiere</small></span>
+      <span class="tool in">Edit<small>schimbă cod</small></span>
+      <span class="tool in">Write<small>fișiere noi</small></span>
+      <span class="tool in">Bash<small>rulează comenzi</small></span>
+      <span class="tool in">Grep<small>caută în proiect</small></span>
+      <span class="tool in">WebFetch<small>citește pagini</small></span>
+      <span class="tool in">WebSearch<small>caută pe net</small></span>
+      <span class="tool in">Agent<small>trimite un subagent</small></span>
+    </div>
+    <div class="modes in" style="--d:.7s">
+      <h4>CÂT ÎL LAȘI SINGUR</h4>
+      <div class="mode-row on" style="--c:var(--cloud)"><i></i><div>întreabă<span>la fiecare acțiune</span></div></div>
+      <div class="mode-row" style="--c:var(--olive)"><i></i><div>acceptă editări<span>fișierele, fără întrebări</span></div></div>
+      <div class="mode-row" style="--c:var(--sky)"><i></i><div>plan<span>doar gândește, nu atinge</span></div></div>
+      <div class="mode-row" style="--c:var(--clay)"><i></i><div>auto<span>decide singur ce e sigur</span></div></div>
+    </div>
+    <div class="keys in" style="--d:1s"><span><kbd>shift+tab</kbd>schimbă modul</span><span><kbd>esc</kbd>oprește</span><span><kbd>esc esc</kbd>dă înapoi</span></div>
+  </section>
+
+  <!-- 11 · atelier -->
+  <section class="slide" data-s="personalizare">
+    <h2 class="in">Îl <em>înveți.</em></h2>
+    <div class="shop" data-stagger=".2,.1">
+      <div class="drawer in" style="--c:#f3e3d9">
+        <svg viewBox="0 0 76 76"><rect x="14" y="8" width="48" height="60" rx="4" fill="none" stroke="#141413" stroke-width="3"/><path d="M24 24h28M24 34h28M24 44h18" stroke="#d97757" stroke-width="3"/></svg>
+        <b>CLAUDE.md</b><span>memoria proiectului: reguli, comenzi, stil</span><code>./CLAUDE.md</code></div>
+      <div class="drawer in" style="--c:#e6ecdf">
+        <svg viewBox="0 0 76 76"><path d="M14 16h40l8 8v36H14z" fill="none" stroke="#141413" stroke-width="3"/><path d="M26 34l8 8 14-16" fill="none" stroke="#788c5d" stroke-width="4"/></svg>
+        <b>Skills</b><span>rețete pe care le încarcă singur când trebuie</span><code>.claude/skills/fara-ai-slop/</code></div>
+      <div class="drawer in" style="--c:#e4ebf2">
+        <svg viewBox="0 0 76 76"><text x="10" y="52" font-family="JetBrains Mono" font-size="40" font-weight="700" fill="#6a9bcc">/</text><path d="M40 28h24M40 40h18M40 52h22" stroke="#141413" stroke-width="3"/></svg>
+        <b>Comenzi</b><span>scurtături scrise o dată</span><code>/init · /review · /deploy</code></div>
+      <div class="drawer in" style="--c:#efe2e7">
+        <svg viewBox="0 0 76 76"><path d="M38 8 L22 42 H38 L32 68 L56 30 H40 L46 8 Z" fill="none" stroke="#c46686" stroke-width="3" stroke-linejoin="round"/></svg>
+        <b>Hooks</b><span>reflexe: după fiecare edit → formatează</span><code>settings.json</code></div>
+      <div class="drawer in" style="--c:#ece7dc">
+        <svg viewBox="0 0 76 76"><rect x="22" y="30" width="32" height="30" rx="6" fill="none" stroke="#141413" stroke-width="3"/><path d="M30 30V14M46 30V14M38 60v12" stroke="#d4a27f" stroke-width="4"/></svg>
+        <b>MCP</b><span>conectori: GitHub, Gmail, Notion, Figma</span><code>claude mcp add</code></div>
+      <div class="drawer in" style="--c:#e5e4ee">
+        <svg viewBox="0 0 76 76"><circle cx="38" cy="20" r="10" fill="#d97757"/><circle cx="18" cy="56" r="8" fill="none" stroke="#141413" stroke-width="3"/><circle cx="38" cy="58" r="8" fill="none" stroke="#141413" stroke-width="3"/><circle cx="58" cy="56" r="8" fill="none" stroke="#141413" stroke-width="3"/><path d="M34 30 22 48M38 30v20M42 30l12 18" stroke="#141413" stroke-width="2"/></svg>
+        <b>Subagenți</b><span>clone care lucrează în paralel</span><code>.claude/agents/</code></div>
+    </div>
+  </section>
+
+  <!-- 12 · MCP -->
+  <section class="slide" data-s="MCP">
+    <div class="mcp">
+      <svg viewBox="0 0 1360 700" aria-hidden="true">
+        <text x="0" y="80" font-family="Newsreader" font-size="88" letter-spacing="-2" fill="#141413" class="in">MCP <tspan font-style="italic" fill="#d97757">= USB-C</tspan></text>
+        <text x="4" y="126" font-size="24" fill="#87867f" class="in" style="--d:.1s">un singur fel de mufă pentru orice aplicație</text>
+        <g class="in" style="--d:.3s;--in-anim:pop">
+          <circle cx="430" cy="430" r="120" fill="#f0eee6" stroke="#141413" stroke-width="3"/>
+          <use href="#spark" class="spark" x="380" y="380" width="100" height="100"/>
+        </g>
+        <g fill="none" stroke="#141413" stroke-width="2.5">
+          <path id="m1" class="draw" style="--d:.6s" d="M550 430 C 700 430, 760 230, 900 230"/>
+          <path id="m2" class="draw" style="--d:.7s" d="M550 430 C 700 430, 760 360, 900 360"/>
+          <path id="m3" class="draw" style="--d:.8s" d="M550 430 C 700 430, 760 490, 900 490"/>
+          <path id="m4" class="draw" style="--d:.9s" d="M550 430 C 700 430, 760 620, 900 620"/>
+        </g>
+        <g font-size="30" font-family="Newsreader">
+          <g class="in" style="--d:1s"><rect x="900" y="196" width="340" height="68" rx="34" fill="#141413"/><text x="940" y="240" fill="#faf9f5">GitHub</text><text x="1210" y="240" text-anchor="end" font-family="JetBrains Mono" font-size="16" fill="#b0aea5">PR-uri</text></g>
+          <g class="in" style="--d:1.1s"><rect x="900" y="326" width="340" height="68" rx="34" fill="#f3d5c7"/><text x="940" y="370" fill="#141413">Gmail</text><text x="1210" y="370" text-anchor="end" font-family="JetBrains Mono" font-size="16" fill="#3d3d3a">mailuri</text></g>
+          <g class="in" style="--d:1.2s"><rect x="900" y="456" width="340" height="68" rx="34" fill="#e3dacc"/><text x="940" y="500" fill="#141413">Notion</text><text x="1210" y="500" text-anchor="end" font-family="JetBrains Mono" font-size="16" fill="#3d3d3a">documente</text></g>
+          <g class="in" style="--d:1.3s"><rect x="900" y="586" width="340" height="68" rx="34" fill="#d8e3ee"/><text x="940" y="630" fill="#141413">Postgres</text><text x="1210" y="630" text-anchor="end" font-family="JetBrains Mono" font-size="16" fill="#3d3d3a">baze de date</text></g>
+        </g>
+        <circle r="8" fill="#d97757"><animateMotion dur="2.2s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear"><mpath href="#m1"/></animateMotion></circle>
+        <circle r="8" fill="#d97757"><animateMotion dur="2.6s" begin=".4s" repeatCount="indefinite" keyPoints="0;1;0" keyTimes="0;.5;1" calcMode="linear"><mpath href="#m3"/></animateMotion></circle>
+        <text x="0" y="640" font-size="22" fill="#3d3d3a" class="in" style="--d:1.5s">Claude întreabă → serverul MCP face → răspunsul se întoarce.</text>
+        <text x="0" y="674" font-size="18" fill="#87867f" class="in" style="--d:1.6s">standard deschis · merge și în Hermes, OpenClaw, Cursor…</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 13 · cheia -->
+  <section class="slide key-cover" data-s="API key">
+    <h2 class="in">API key.</h2>
+    <p class="sub in" style="--d:.2s">o parolă care <span style="color:#d97757">plătește</span>.</p>
+    <svg class="bigkey" viewBox="0 0 760 500" aria-hidden="true">
+      <g class="turn">
+        <circle cx="170" cy="250" r="130" fill="none" stroke="#d97757" stroke-width="26"/>
+        <circle cx="170" cy="250" r="44" fill="#141413" stroke="#d97757" stroke-width="10"/>
+        <path d="M300 226 H 700 V 274 H 300 Z" fill="#d97757"/>
+        <path d="M600 274 v 70 h 36 v -70 M520 274 v 50 h 36 v -50" fill="#d97757"/>
+        <text x="330" y="258" font-family="JetBrains Mono" font-size="22" font-weight="700" fill="#141413">sk-ant-api03-</text>
+      </g>
+    </svg>
+    <div class="keystr in" style="--d:.6s">sk-ant-api03-<span>••••••••••••••••••••••••</span></div>
+  </section>
+
+  <!-- 14 · cum circulă -->
+  <section class="slide" data-s="cererea">
+    <h2 class="in">Drumul unei <em>cereri.</em></h2>
+    <div class="req">
+      <svg viewBox="0 0 1360 520" aria-hidden="true">
+        <g class="in" style="--d:.2s">
+          <rect x="0" y="120" width="300" height="220" rx="18" fill="#f0eee6" stroke="#141413" stroke-width="3"/>
+          <text x="30" y="178" font-family="Newsreader" font-size="40">aplicația ta</text>
+          <text x="30" y="218" font-size="19" fill="#87867f">botul · site-ul · scriptul</text>
+          <rect x="30" y="250" width="240" height="60" rx="10" fill="#faf9f5" stroke="#e2dfd3" stroke-width="2"/>
+          <text x="46" y="287" class="mono" font-size="16" fill="#3d3d3a">.env → ANTHROPIC_API_KEY</text>
+        </g>
+        <g class="in" style="--d:.5s">
+          <rect x="1060" y="120" width="300" height="220" rx="18" fill="#141413"/>
+          <use href="#spark" class="spark" x="1090" y="150" width="60" height="60"/>
+          <text x="1090" y="262" font-family="Newsreader" font-size="36" fill="#faf9f5">Claude</text>
+          <text x="1090" y="300" class="mono" font-size="16" fill="#b0aea5">api.anthropic.com</text>
+        </g>
+        <path class="draw" style="--d:.8s" d="M300 190 H 1060" stroke="#141413" stroke-width="3" fill="none"/>
+        <path class="draw" style="--d:1s" d="M1060 280 H 300" stroke="#d97757" stroke-width="3" fill="none" stroke-dasharray="0"/>
+        <g class="in" style="--d:1.1s">
+          <rect x="420" y="150" width="520" height="80" rx="10" fill="#faf9f5" stroke="#141413" stroke-width="2"/>
+          <text x="440" y="182" class="mono" font-size="17" fill="#141413">POST /v1/messages</text>
+          <text x="440" y="212" class="mono" font-size="17" fill="#d97757">x-api-key: sk-ant-…</text>
+        </g>
+        <g class="in" style="--d:1.4s">
+          <rect x="420" y="246" width="520" height="80" rx="10" fill="#faf9f5" stroke="#d97757" stroke-width="2"/>
+          <text x="440" y="278" class="mono" font-size="17" fill="#141413">{ "text": "Salut! …" }</text>
+          <text x="440" y="308" class="mono" font-size="17" fill="#87867f">usage: 12 in · 48 out</text>
+        </g>
+        <circle r="10" fill="#141413"><animateMotion dur="3s" repeatCount="indefinite" path="M300 190 H 1060 V 280 H 300 V 190" keyTimes="0;.4;.5;.9;1" keyPoints="0;.4;.5;.9;1" calcMode="linear"/></circle>
+        <g class="in" style="--d:1.8s">
+          <path d="M1210 340 V 430 H 760" stroke="#87867f" stroke-width="2" fill="none" stroke-dasharray="6 6"/>
+          <rect x="560" y="400" width="200" height="64" rx="10" fill="#e3dacc"/>
+          <text x="580" y="430" font-size="18" fill="#3d3d3a">factura ta</text>
+          <text x="580" y="454" class="mono" font-size="18" fill="#141413">+ $0.0013</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 15 · cod -->
+  <section class="slide" data-s="cod">
+    <h2 class="in" style="font-size:72px">În cod: <em>9 rânduri.</em></h2>
+    <div class="code2">
+      <div class="cc in" style="--d:.2s"><span class="tab">python · pip install anthropic</span><span class="ln"><span class="cl">import</span> anthropic</span><span class="ln"> </span><span class="ln">client = anthropic.Anthropic()  <span class="dim"># ia cheia din env</span></span><span class="ln">msg = client.messages.create(</span><span class="ln">    model=<span class="gr">"claude-opus-5"</span>,</span><span class="ln">    max_tokens=<span class="ye">1024</span>,</span><span class="ln">    messages=[{<span class="gr">"role"</span>: <span class="gr">"user"</span>, <span class="gr">"content"</span>: <span class="gr">"Salut!"</span>}],</span><span class="ln">)</span><span class="ln"><span class="cl">print</span>(msg.content[0].text)</span></div>
+      <div class="cc in" style="--d:.4s"><span class="tab">terminal · curl</span><span class="ln">curl https://api.anthropic.com/v1/messages \</span><span class="ln">  -H <span class="gr">"x-api-key: $ANTHROPIC_API_KEY"</span> \</span><span class="ln">  -H <span class="gr">"anthropic-version: 2023-06-01"</span> \</span><span class="ln">  -H <span class="gr">"content-type: application/json"</span> \</span><span class="ln">  -d <span class="gr">'{"model": "claude-opus-5",</span></span><span class="ln"><span class="gr">       "max_tokens": 1024,</span></span><span class="ln"><span class="gr">       "messages": [{"role": "user",</span></span><span class="ln"><span class="gr">                     "content": "Salut!"}]}'</span></span></div>
+    </div>
+    <div class="resp in" style="--d:.8s"><span>înainte de orice:</span><div class="cc"><span class="dim">$</span> export ANTHROPIC_API_KEY=<span class="cl">sk-ant-…</span></div><span>cheia: console.anthropic.com → API Keys</span></div>
+  </section>
+
+  <!-- 16 · reguli -->
+  <section class="slide" data-s="siguranță">
+    <h2 class="in">Cheia <em>nu</em> pleacă de acasă.</h2>
+    <div class="rules" data-stagger=".3,.15">
+      <div class="rule in"><span class="x">1</span><div><b>Niciodată în Git.</b><span>stă în <code>.env</code>, iar <code>.env</code> stă în <code>.gitignore</code></span></div></div>
+      <div class="rule in"><span class="x">2</span><div><b>Niciodată în browser.</b><span>codul din pagină îl vede oricine · cheia doar pe server</span></div></div>
+      <div class="rule in"><span class="x">3</span><div><b>Limită de cheltuieli.</b><span>setezi un plafon lunar în Console</span></div></div>
+      <div class="rule in"><span class="x">4</span><div><b>O cheie per proiect.</b><span>a scăpat una? o ștergi doar pe ea</span></div></div>
+    </div>
+    <div class="leak in" style="--d:.8s">
+      <div class="commit">
+        <span class="dim" style="color:#87867f">commit a41f9c2 · „merge botul”</span>
+        <span class="add">+ const client = new Anthropic({</span>
+        <span class="bad">+   apiKey: "sk-ant-api03-Xq7…"</span>
+        <span class="add">+ })</span>
+        <div class="stamp">REPO PUBLIC</div>
+      </div>
+      <p>Boții scanează GitHub non-stop după chei. Una publicată e găsită în minute, iar factura vine la tine.</p>
+    </div>
+  </section>
+
+  <!-- 17 · scurtături -->
+  <section class="slide" data-s="scurtături">
+    <h2 class="in">Scurtături <em>care contează.</em></h2>
+    <div class="tips in" style="--d:.2s">
+      <div class="tip"><code>/init</code><span>scrie CLAUDE.md din proiect</span></div>
+      <div class="tip"><code>/clear</code><span>conversație nouă, context curat</span></div>
+      <div class="tip"><code>/compact</code><span>rezumă și continuă</span></div>
+      <div class="tip"><code>/model</code><span>schimbă modelul</span></div>
+      <div class="tip"><code>@fisier.js</code><span>îi arăți exact un fișier</span></div>
+      <div class="tip"><code>! npm test</code><span>rulezi tu o comandă</span></div>
+      <div class="tip"><code>shift+tab</code><span>modul plan: gândește întâi</span></div>
+      <div class="tip"><code>esc esc</code><span>întoarce-te în timp</span></div>
+      <div class="tip"><code>claude -c</code><span>continuă ultima sesiune</span></div>
+      <div class="tip"><code>claude -p "…"</code><span>o comandă, fără chat · pentru scripturi</span></div>
+    </div>
+  </section>
+
+  <!-- 18 · bani -->
+  <section class="slide" data-s="ce faci cu el">
+    <h2 class="in">Ce <em>vinzi</em> cu el.</h2>
+    <div class="money" data-stagger=".3,.18">
+      <div class="biz in">
+        <svg viewBox="0 0 400 200" aria-hidden="true"><rect x="60" y="30" width="280" height="150" rx="10" fill="#faf9f5" stroke="#141413" stroke-width="3"/><rect x="60" y="30" width="280" height="24" rx="10" fill="#141413"/><rect x="84" y="76" width="140" height="16" rx="4" fill="#d97757"/><rect x="84" y="102" width="200" height="10" rx="3" fill="#e3dacc"/><rect x="84" y="120" width="170" height="10" rx="3" fill="#e3dacc"/><rect x="84" y="146" width="80" height="22" rx="6" fill="#141413"/></svg>
+        <b>Site-uri, rapid</b><span>Claude Code construiește, tu alegi și verifici</span><span class="via">Claude Code</span></div>
+      <div class="biz in">
+        <svg viewBox="0 0 400 200" aria-hidden="true"><rect x="130" y="16" width="140" height="170" rx="18" fill="#faf9f5" stroke="#141413" stroke-width="3"/><rect x="146" y="46" width="90" height="26" rx="12" fill="#e3dacc"/><rect x="164" y="82" width="90" height="26" rx="12" fill="#d97757"/><rect x="146" y="118" width="100" height="26" rx="12" fill="#e3dacc"/></svg>
+        <b>Chatbot pentru firme</b><span>răspunde clienților 24/7, pe site sau WhatsApp</span><span class="via">API</span></div>
+      <div class="biz in">
+        <svg viewBox="0 0 400 200" aria-hidden="true"><circle cx="200" cy="100" r="64" fill="none" stroke="#141413" stroke-width="3"/><path d="M200 100 V 58 M200 100 L 232 118" stroke="#d97757" stroke-width="5" stroke-linecap="round"/><circle cx="200" cy="100" r="6" fill="#141413"/><path d="M110 60 L 80 40 M 290 60 L 320 40" stroke="#141413" stroke-width="3"/></svg>
+        <b>Automatizări</b><span>rapoarte, follow-up, facturi · agenți care nu dorm</span><span class="via">→ prezentarea 3</span></div>
+    </div>
+  </section>
+
+  <!-- 19 · final -->
+  <section class="slide end" data-s="start">
+    <h2 class="in">Deschide terminalul.<br><em>Scrie „claude”.</em></h2>
+    <div class="cc in" style="--d:.5s"><span class="dim">$</span> <span class="typed" style="--d:1s">claude "explică-mi proiectul ăsta"</span><span class="caret" style="background:#d97757"></span></div>
+    <svg class="big-spark spin-slow" aria-hidden="true"><use href="#spark" class="spark"/></svg>
+  </section>
+
+  <div class="foot" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#spark"/></svg><span id="sec">Claude</span><div class="bar"><i></i></div><span class="n" id="num"></span></div>
+</div>
+<script src="../deck/deck.js"></script>
+<script>
+// Spinner-ul din Claude Code: glifele se rotesc, verbele se schimbă.
+const glyphs = ['·', '✢', '✳', '✶', '✻', '✽', '✻', '✶', '✳', '✢'];
+const words = ['Pondering…', 'Simmering…', 'Noodling…', 'Brewing…', 'Percolating…', 'Clauding…'];
+const gEl = document.getElementById('glyph'), wEl = document.getElementById('word');
+let g = 0, w = 0;
+setInterval(() => { gEl.textContent = glyphs[g = (g + 1) % glyphs.length]; }, 120);
+setInterval(() => { wEl.textContent = words[w = (w + 1) % words.length]; }, 1800);
+
+// Contorul API: urcă încet, ca un taximetru.
+const meter = document.getElementById('meter');
+let cost = 0, meterTimer = null;
+
+// Replay-ul din terminal: liniile apar pe rând.
+const lines = [...document.querySelectorAll('#replay .ln')];
+const delays = [0, 200, 400, 1400, 1700, 2900, 3100, 3600, 3800, 4300, 4500, 5100, 5500, 6000, 6400, 6600];
+let replayTimers = [];
+
+const sec = document.getElementById('sec'), num = document.getElementById('num');
+document.addEventListener('slide', (e) => {
+  const el = e.detail.el;
+  sec.textContent = el.dataset.s || '';
+  num.textContent = String(e.detail.index + 1).padStart(2, '0') + ' / ' + e.detail.total;
+  document.querySelector('.foot').style.color = el.classList.contains('key-cover') ? '#87867f' : '';
+
+  clearInterval(meterTimer);
+  if (el.contains(meter)) {
+    cost = 0; meter.textContent = '0.0000';
+    meterTimer = setInterval(() => { cost += 0.004 * (0.5 + Math.random()); meter.textContent = cost.toFixed(4); if (cost > 4) cost = 0; }, 90);
+  }
+  replayTimers.forEach(clearTimeout); replayTimers = [];
+  if (el.contains(lines[0])) {
+    lines.forEach((l) => l.classList.remove('show'));
+    lines.forEach((l, i) => replayTimers.push(setTimeout(() => l.classList.add('show'), delays[i] ?? i * 300)));
+  }
+});
+if (window.deck) window.deck.go(window.deck.index);
+</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+/* Motorul comun: scena 1600×900 scalată, slide-uri, tastatură.
+   Culorile și fonturile le pune fiecare prezentare în :root. */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-outer, #000);
+  color: var(--ink);
+  font-family: var(--f-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1600px;
+  height: 900px;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 96px 110px 84px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .45s cubic-bezier(.2, .7, .2, 1), visibility 0s linear .45s;
+}
+.slide.is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .45s cubic-bezier(.2, .7, .2, 1), visibility 0s;
+}
+
+/* Intrări: fiecare element marcat .in apare cu decalajul lui (--d).
+   Nu toate elementele au .in: doar cele care spun o poveste în ordine. */
+.in { opacity: 0; }
+.is-on .in {
+  animation: var(--in-anim, rise) .7s cubic-bezier(.2, .8, .2, 1) var(--d, 0s) both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes pop { 0% { opacity: 0; transform: scale(.6); } 70% { transform: scale(1.06); } 100% { opacity: 1; transform: none; } }
+@keyframes wipe { from { opacity: 1; clip-path: inset(0 100% 0 0); } to { opacity: 1; clip-path: inset(0 0 0 0); } }
+@keyframes draw { from { stroke-dashoffset: var(--len, 1000); } to { stroke-dashoffset: 0; } }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Text tastat: JS pune --n (câte caractere). Merge doar cu font mono. */
+.typed {
+  display: inline-block;
+  white-space: pre;
+  clip-path: inset(0 100% 0 0);
+}
+.is-on .typed {
+  animation: type calc(var(--n, 20) * 38ms) steps(var(--n, 20), jump-start) var(--d, 0s) both;
+}
+@keyframes type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+.caret {
+  display: inline-block;
+  width: .6em;
+  height: 1.1em;
+  vertical-align: -.2em;
+  background: currentColor;
+  animation: blink 1s steps(1) infinite;
+}
+
+/* Linii SVG care se desenează: JS calculează --len. */
+.is-on .draw {
+  stroke-dasharray: var(--len, 1000);
+  animation: draw 1.2s cubic-bezier(.6, 0, .2, 1) var(--d, 0s) both;
+}
+
+.hint {
+  position: fixed;
+  right: 14px;
+  bottom: 10px;
+  font: 12px/1 var(--f-mono, monospace);
+  color: var(--hint, rgba(255, 255, 255, .35));
+  opacity: 1;
+  transition: opacity 1s;
+  pointer-events: none;
+}
+.hint.gone { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001s !important;
+  }
+}
+
+@media print {
+  html, body { overflow: visible; height: auto; background: none; }
+  .stage { position: static; transform: none; height: auto; background: none; }
+  .slide {
+    position: relative;
+    width: 1600px;
+    height: 900px;
+    opacity: 1;
+    visibility: visible;
+    break-after: page;
+    background: var(--bg);
+  }
+  .in, .typed { opacity: 1 !important; clip-path: none !important; animation: none !important; }
+  .hint { display: none; }
+  @page { size: 1600px 900px; margin: 0; }
+}

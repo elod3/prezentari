@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secret sauce</title>
+<meta name="description" content="Trei prezentări: Linux din kernel în sus, Claude și Claude Code, servere și agenți AI.">
+<link rel="stylesheet" href="assets/fonts/martian.css">
+<link rel="stylesheet" href="assets/fonts/jetbrains.css">
+<link rel="stylesheet" href="assets/fonts/newsreader.css">
+<link rel="stylesheet" href="assets/fonts/hanken.css">
+<link rel="stylesheet" href="assets/fonts/bodoni-core.css">
+<link rel="stylesheet" href="assets/fonts/plexmono.css">
+<style>
+/* Fiecare bandă poartă tema prezentării ei. Pagina nu are o temă proprie. */
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #11111b; }
+a { color: inherit; text-decoration: none; }
+.band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 64px); align-items: center; padding: clamp(40px, 7vw, 96px) clamp(16px, 6vw, 96px); position: relative; }
+.band .num { font-size: 14px; letter-spacing: .1em; opacity: .6; }
+.band h2 { margin: 14px 0 12px; line-height: .95; }
+.band p { margin: 0 0 26px; max-width: 34ch; }
+.band .go { display: inline-flex; gap: 12px; align-items: center; padding: 12px 18px; font-size: 15px; transition: transform .25s cubic-bezier(.3,1.5,.5,1), background-color .2s; }
+.band .go:hover { transform: translateX(6px); }
+.band .go:focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+.band img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
+.band .pics { position: relative; }
+.band .pics img + img { position: absolute; width: 46%; right: -3%; bottom: -12%; }
+.meta { font-size: 13px; opacity: .55; margin-top: 18px; }
+
+.linux { background: #1e1e2e; color: #cdd6f4; font-family: 'JetBrains Mono', monospace; }
+.linux h2 { font: 800 clamp(44px, 6.4vw, 96px) 'Martian Mono', monospace; letter-spacing: -.04em; }
+.linux h2 span { color: #1793d1; }
+.linux p { color: #a6adc8; font-size: 16px; line-height: 1.55; }
+.linux .go { background: #1793d1; color: #11111b; border-radius: 8px; font-weight: 700; }
+.linux img { border: 2px solid #45475a; border-radius: 10px; }
+.linux .pics img + img { border-color: #1793d1; }
+
+.claude { background: #faf9f5; color: #141413; font-family: 'Hanken Grotesk', sans-serif; }
+.claude h2 { font: 400 clamp(52px, 7.4vw, 112px) 'Newsreader', serif; letter-spacing: -.025em; }
+.claude h2 em { color: #d97757; }
+.claude p { color: #3d3d3a; font-size: 19px; line-height: 1.5; }
+.claude .go { background: #141413; color: #faf9f5; border-radius: 99px; font-weight: 600; padding: 12px 22px; }
+.claude img { border-radius: 14px; box-shadow: 0 24px 50px -24px rgba(20,20,19,.35); }
+
+.agenti { background: #0e0d0b; color: #ece6d8; font-family: 'IBM Plex Mono', monospace; border-left: 22px solid #24221e; border-right: 22px solid #24221e; }
+.agenti h2 { font: 500 clamp(52px, 7.4vw, 116px)/.95 'Bodoni Core', 'Newsreader', serif; letter-spacing: -.02em; }
+.agenti h2 i { color: #ff4d4d; font-weight: 400; }
+.agenti p { color: #bdb6a6; font-size: 16px; line-height: 1.55; }
+.agenti .go { border: 2px solid #ff4d4d; color: #ff4d4d; border-radius: 4px; font-weight: 600; }
+.agenti .go:hover { background: #ff4d4d; color: #0e0d0b; }
+.agenti img { border: 1px solid #34312b; }
+
+.top { background: #11111b; color: #7f849c; font: 13px/1.6 'JetBrains Mono', monospace; padding: 22px clamp(16px, 6vw, 96px); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.top b { color: #cdd6f4; font-weight: 500; }
+.keys { background: #11111b; color: #7f849c; font: 13px/1.8 'JetBrains Mono', monospace; padding: 28px clamp(16px, 6vw, 96px) 40px; }
+.keys kbd { color: #cdd6f4; border: 1px solid #45475a; border-radius: 4px; padding: 1px 6px; font: inherit; }
+
+@media (max-width: 760px) {
+  .band { grid-template-columns: 1fr; }
+  .band .pics { order: -1; margin-bottom: 18px; }
+  .band .pics img + img { display: none; }
+  .agenti { border-width: 0 0 0 10px; }
+}
+</style>
+</head>
+<body>
+  <header class="top"><span><b>secret-sauce</b> · trei prezentări</span><span>ro · sept 2026</span></header>
+
+  <section class="band linux">
+    <div>
+      <div class="num">01 / LINUX</div>
+      <h2>Arch, de jos <span>în sus.</span></h2>
+      <p>kernel, syscall, systemd, daemoni, Wayland, floating vs tiling, rice, pacman.</p>
+      <a class="go" href="linux/index.html">deschide →</a>
+      <div class="meta">19 slide-uri · Catppuccin Mocha + albastru Arch · Martian Mono</div>
+    </div>
+    <div class="pics"><img src="assets/thumbs/linux-01.webp" alt="Coperta prezentării Linux"><img src="assets/thumbs/linux-11.webp" alt="Slide: floating vs tiling"></div>
+  </section>
+
+  <section class="band claude">
+    <div>
+      <div class="num">02 / CLAUDE</div>
+      <h2>Claude, <em>pe bune.</em></h2>
+      <p>tokeni, modele și prețuri, Claude Code, skills, MCP, cheia API și cum n-o scapi.</p>
+      <a class="go" href="claude/index.html">deschide →</a>
+      <div class="meta">19 slide-uri · ivory, slate, clay · Newsreader + Hanken Grotesk</div>
+    </div>
+    <div class="pics"><img src="assets/thumbs/claude-01.webp" alt="Coperta prezentării Claude"><img src="assets/thumbs/claude-09.webp" alt="Slide: sesiune Claude Code"></div>
+  </section>
+
+  <section class="band agenti">
+    <div>
+      <div class="num">03 / AGENȚI</div>
+      <h2>Servere <i>&amp;</i><br>agenți.</h2>
+      <p>server, porturi, VPS, daemon, apoi OpenClaw și Hermes: ce fac, cum se instalează, ce vinzi cu ei.</p>
+      <a class="go" href="agenti/index.html">deschide →</a>
+      <div class="meta">19 slide-uri · cerneală + gravurile Hermes + roșul OpenClaw · Bodoni Moda</div>
+    </div>
+    <div class="pics"><img src="assets/thumbs/agenti-01.webp" alt="Coperta prezentării despre agenți"><img src="assets/thumbs/agenti-10.webp" alt="Slide: gateway-ul OpenClaw"></div>
+  </section>
+
+  <footer class="keys"><kbd>←</kbd> <kbd>→</kbd> sau spațiu · <kbd>F</kbd> ecran complet · swipe pe telefon · <kbd>Ctrl</kbd>+<kbd>P</kbd> → PDF</footer>
+</body>
+</html>
