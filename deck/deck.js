@@ -1,4 +1,4 @@
-// Motorul comun. ← → spațiu PgUp PgDn Home End, F = ecran complet,
+// Motorul comun. ← → spațiu PgUp PgDn Home End, F = ecran complet, Esc = înapoi la meniu,
 // click pe jumătatea dreaptă = înainte, swipe pe telefon.
 (() => {
   const stage = document.querySelector('.stage');
@@ -44,6 +44,7 @@
     else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace', 'h', 'k'].includes(k)) { e.preventDefault(); go(cur - 1); }
     else if (k === 'Home') go(0);
     else if (k === 'End') go(total - 1);
+    else if (k === 'Escape' && !document.fullscreenElement) location.href = '../index.html';
     else if (k === 'f' || k === 'F') {
       if (document.fullscreenElement) document.exitFullscreen();
       else document.documentElement.requestFullscreen?.();
@@ -71,7 +72,7 @@
 
   const hint = document.createElement('div');
   hint.className = 'hint';
-  hint.textContent = '← →  ·  F';
+  hint.textContent = '← →  ·  F  ·  Esc meniu';
   document.body.append(hint);
   setTimeout(() => hint.classList.add('gone'), 3500);
 
