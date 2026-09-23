@@ -12,94 +12,315 @@
 <link rel="stylesheet" href="assets/fonts/bodoni-core.css">
 <link rel="stylesheet" href="assets/fonts/plexmono.css">
 <style>
-/* Fiecare bandă poartă tema prezentării ei. Pagina nu are o temă proprie. */
+/* Meniul e un amestec din cele trei prezentări, fiecare cu rolul ei:
+   - Linux dă scheletul: bara waybar, ferestrele care se așază singure ca în Hyprland.
+   - Claude dă vocea: titlul Newsreader, spinner-ul cu glife din Claude Code.
+   - Agenți dă rama: cerneala de fundal, șinele de rack, numerotarea U01/U02/U03.
+   Accentul (--acc) e al prezentării alese: albastru Arch, clay, roșu OpenClaw. */
+:root {
+  --ink: #0e0d0b; --ink2: #171613; --rule: #34312b;
+  --bone: #ece6d8; --bone2: #bdb6a6; --ash: #8a8374;
+  --mantle: #181825; --s0: #313244; --s1: #45475a; --text: #cdd6f4; --sub: #a6adc8; --ov: #7f849c;
+  --green: #a6e3a1; --peach: #fab387; --led: #6fdc8c; --amber: #ffb020;
+  --arch: #1793d1; --clay: #d97757; --red: #ff4d4d;
+  --acc: var(--arch);
+  --rail: 30px;
+  --ease: cubic-bezier(.3, 1.25, .45, 1);
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --f-serif: 'Newsreader', Georgia, serif;
+}
+body[data-on="claude"] { --acc: var(--clay); }
+body[data-on="agenti"] { --acc: var(--red); }
+
 * { box-sizing: border-box; }
-html, body { margin: 0; background: #11111b; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  background: var(--ink); color: var(--bone);
+  font: 15px/1.5 var(--f-mono);
+  -webkit-font-smoothing: antialiased;
+  padding: 0 calc(var(--rail) + 14px);
+  min-height: 100vh; display: flex; flex-direction: column;
+}
 a { color: inherit; text-decoration: none; }
-.band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 4vw, 64px); align-items: center; padding: clamp(40px, 7vw, 96px) clamp(16px, 6vw, 96px); position: relative; }
-.band .num { font-size: 14px; letter-spacing: .1em; opacity: .6; }
-.band h2 { margin: 14px 0 12px; line-height: .95; }
-.band p { margin: 0 0 26px; max-width: 34ch; }
-.band .go { display: inline-flex; gap: 12px; align-items: center; padding: 12px 18px; font-size: 15px; transition: transform .25s cubic-bezier(.3,1.5,.5,1), background-color .2s; }
-.band .go:hover { transform: translateX(6px); }
-.band .go:focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
-.band img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
-.band .pics { position: relative; }
-.band .pics img + img { position: absolute; width: 46%; right: -3%; bottom: -12%; }
-.meta { font-size: 13px; opacity: .55; margin-top: 18px; }
 
-.linux { background: #1e1e2e; color: #cdd6f4; font-family: 'JetBrains Mono', monospace; }
-.linux h2 { font: 800 clamp(44px, 6.4vw, 96px) 'Martian Mono', monospace; letter-spacing: -.04em; }
-.linux h2 span { color: #1793d1; }
-.linux p { color: #a6adc8; font-size: 16px; line-height: 1.55; }
-.linux .go { background: #1793d1; color: #11111b; border-radius: 8px; font-weight: 700; }
-.linux img { border: 2px solid #45475a; border-radius: 10px; }
-.linux .pics img + img { border-color: #1793d1; }
+/* ——— șinele de rack, din Agenți ——— */
+.rail { position: fixed; top: 0; bottom: 0; width: var(--rail); z-index: 1;
+  background:
+    radial-gradient(circle at 15px 50%, #070706 0 4.5px, transparent 5px) 0 0 / var(--rail) 40px,
+    linear-gradient(90deg, #1c1a17, #2a2722 50%, #1c1a17);
+  border-left: 1px solid #3a362f; border-right: 1px solid #3a362f; }
+.rail.l { left: 0; } .rail.r { right: 0; }
 
-.claude { background: #faf9f5; color: #141413; font-family: 'Hanken Grotesk', sans-serif; }
-.claude h2 { font: 400 clamp(52px, 7.4vw, 112px) 'Newsreader', serif; letter-spacing: -.025em; }
-.claude h2 em { color: #d97757; }
-.claude p { color: #3d3d3a; font-size: 19px; line-height: 1.5; }
-.claude .go { background: #141413; color: #faf9f5; border-radius: 99px; font-weight: 600; padding: 12px 22px; }
-.claude img { border-radius: 14px; box-shadow: 0 24px 50px -24px rgba(20,20,19,.35); }
+/* ——— bara de sus, waybar din Linux ——— */
+.bar {
+  margin-top: 10px; height: 38px; display: flex; align-items: center; gap: 14px; padding: 0 10px;
+  background: var(--mantle); border: 1px solid var(--s0); border-radius: 10px;
+  font: 500 13px/1 var(--f-mono); color: var(--sub); position: relative; z-index: 2;
+}
+.bar svg { width: 18px; height: 18px; flex: none; }
+.ws { display: flex; gap: 4px; }
+.ws button {
+  all: unset; cursor: pointer; min-width: 30px; height: 24px; display: grid; place-items: center;
+  border-radius: 6px; color: var(--ov);
+  transition: background-color .3s, color .3s, min-width .35s var(--ease);
+}
+.ws button:hover { color: var(--text); }
+.ws button.on { background: var(--acc); color: #11111b; min-width: 52px; font-weight: 700; }
+.ws button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.bar .ttl { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar .right { margin-left: auto; display: flex; gap: 16px; align-items: center; white-space: nowrap; }
+.bar .right b { color: var(--green); font-weight: 500; }
+.bar .n { color: var(--peach); }
+.leds { display: flex; gap: 6px; }
+.leds i { width: 7px; height: 7px; border-radius: 50%; background: var(--led); animation: blink 1.3s steps(1) infinite; }
+.leds i:nth-child(2) { background: var(--amber); animation-duration: .7s; }
+.leds i:nth-child(3) { animation-duration: 2.1s; }
+@keyframes blink { 50% { opacity: .15; } }
 
-.agenti { background: #0e0d0b; color: #ece6d8; font-family: 'IBM Plex Mono', monospace; border-left: 22px solid #24221e; border-right: 22px solid #24221e; }
-.agenti h2 { font: 500 clamp(52px, 7.4vw, 116px)/.95 'Bodoni Core', 'Newsreader', serif; letter-spacing: -.02em; }
-.agenti h2 i { color: #ff4d4d; font-weight: 400; }
-.agenti p { color: #bdb6a6; font-size: 16px; line-height: 1.55; }
-.agenti .go { border: 2px solid #ff4d4d; color: #ff4d4d; border-radius: 4px; font-weight: 600; }
-.agenti .go:hover { background: #ff4d4d; color: #0e0d0b; }
-.agenti img { border: 1px solid #34312b; }
+/* ——— desktopul: index în stânga, ferestre în dreapta ——— */
+.desk {
+  flex: 1; display: grid; grid-template-columns: minmax(330px, 29fr) 71fr; min-height: 0;
+  gap: clamp(24px, 3vw, 48px); padding: clamp(28px, 5vh, 56px) 8px 20px 12px;
+}
 
-.top { background: #11111b; color: #7f849c; font: 13px/1.6 'JetBrains Mono', monospace; padding: 22px clamp(16px, 6vw, 96px); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-.top b { color: #cdd6f4; font-weight: 500; }
-.keys { background: #11111b; color: #7f849c; font: 13px/1.8 'JetBrains Mono', monospace; padding: 28px clamp(16px, 6vw, 96px) 40px; }
-.keys kbd { color: #cdd6f4; border: 1px solid #45475a; border-radius: 4px; padding: 1px 6px; font: inherit; }
+.intro .u { font-size: 12px; letter-spacing: .08em; color: var(--ash); }
+.intro .u b { color: var(--bone); font-weight: 500; }
+.intro h1 {
+  font: 400 clamp(44px, 4vw, 68px)/.98 var(--f-serif); letter-spacing: -.025em;
+  margin: 14px 0 clamp(22px, 4vh, 44px);
+}
+.intro h1 em { color: var(--acc); transition: color .35s; }
 
-@media (max-width: 760px) {
-  .band { grid-template-columns: 1fr; }
-  .band .pics { order: -1; margin-bottom: 18px; }
-  .band .pics img + img { display: none; }
-  .agenti { border-width: 0 0 0 10px; }
+/* Indexul: fiecare rând e scris cu fontul prezentării lui. */
+.idx { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.idx a {
+  display: grid; grid-template-columns: 44px 1fr; column-gap: 12px; row-gap: 4px;
+  padding: clamp(10px, 1.8vh, 16px) 12px clamp(10px, 1.8vh, 16px) 0; border-bottom: 1px solid var(--rule); position: relative;
+  transition: padding-left .35s var(--ease), background-color .25s;
+}
+.idx a::before { /* fanta de pe unitatea din rack, se aprinde pe rândul ales */
+  content: ''; position: absolute; left: 0; top: 16px; bottom: 16px; width: 3px; background: transparent;
+  transition: background-color .25s;
+}
+.idx a.on { padding-left: 14px; background: var(--ink2); }
+.idx a.on::before { background: var(--c); }
+.idx a:focus-visible { outline: 2px solid var(--c); outline-offset: -2px; }
+.idx .u { grid-row: span 2; font-size: 12px; color: var(--ash); padding-top: 6px; }
+.idx .t { font-size: 27px; line-height: 1.1; color: var(--bone); }
+.idx .t i { color: var(--c); }
+.idx .m { font-size: 12px; color: var(--ash); }
+.idx .linux { --c: var(--arch); }
+.idx .linux .t { font: 800 22px/1.15 'Martian Mono', monospace; letter-spacing: -.04em; }
+.idx .claude { --c: var(--clay); }
+.idx .claude .t { font-family: var(--f-serif); font-size: 29px; letter-spacing: -.02em; }
+.idx .agenti { --c: var(--red); }
+.idx .agenti .t { font: 500 29px/1.1 'Bodoni Core', 'Newsreader', serif; }
+
+.about { margin-top: 26px; font-size: 13px; color: var(--ash); max-width: 36ch; min-height: 5em; }
+.about b { color: var(--bone2); font-weight: 500; }
+
+/* ——— ferestrele: master în stânga, stiva în dreapta, ca layout-ul master din Hyprland ——— */
+/* proporția ține slide-urile aproape de 16:9 în fereastră, fără benzi mari sus și jos */
+.tiles { position: relative; align-self: center; aspect-ratio: 100 / 40; max-height: 100%; }
+.win {
+  position: absolute; display: block; overflow: hidden;
+  border: 2px solid var(--s1); border-radius: 10px; background: var(--outer);
+  transition: left .5s var(--ease), top .5s var(--ease), width .5s var(--ease), height .5s var(--ease),
+              border-color .3s, opacity .3s;
+}
+.win[data-slot="m"] { left: 0; top: 0; width: calc(64% - 5px); height: 100%; border-color: var(--acc); }
+.win[data-slot="a"] { left: calc(64% + 5px); top: 0; width: calc(36% - 5px); height: calc(50% - 5px); }
+.win[data-slot="b"] { left: calc(64% + 5px); top: calc(50% + 5px); width: calc(36% - 5px); height: calc(50% - 5px); }
+.win:not([data-slot="m"]) { opacity: .75; }
+.win:not([data-slot="m"]):hover { opacity: 1; border-color: var(--ov); }
+.win:focus-visible { outline: 2px solid var(--bone); outline-offset: 3px; }
+.win img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding-bottom: 42px; }
+.win .cap {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px;
+  display: flex; justify-content: space-between; gap: 12px; align-items: baseline;
+  font: 500 13px/1.3 var(--f-mono); white-space: nowrap;
+}
+.win .cap span { overflow: hidden; text-overflow: ellipsis; }
+.win .cap kbd { font: inherit; opacity: 0; transition: opacity .3s; }
+.win[data-slot="m"] .cap kbd { opacity: 1; }
+/* bara de jos a fiecărei ferestre poartă tema prezentării ei */
+.win.linux { --outer: #11111b; }
+.win.claude { --outer: #e9e6dc; }
+.win.agenti { --outer: #070706; }
+.win.linux .cap { background: #181825; color: #a6adc8; border-top: 1px solid #313244; }
+.win.linux .cap kbd { color: #1793d1; }
+.win.claude .cap { background: #faf9f5; color: #3d3d3a; font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; }
+.win.claude .cap kbd { color: #c6613f; }
+.win.agenti .cap { background: #0e0d0b; color: #bdb6a6; font-family: 'IBM Plex Mono', monospace; border-top: 1px solid #34312b; }
+.win.agenti .cap kbd { color: #ff4d4d; }
+
+/* ——— linia de stare, spinner-ul din Claude Code ——— */
+.status {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  padding: 14px 20px 22px 12px; font-size: 13px; color: var(--ash);
+}
+.status .spin { color: var(--acc); display: flex; gap: 10px; align-items: center; transition: color .35s; }
+.status .spin .g { display: inline-block; width: 1.1em; text-align: center; font-size: 15px; }
+.status .spin .w { color: var(--bone2); }
+.status .keys { margin-left: auto; }
+.status kbd { color: var(--bone); border: 1px solid var(--rule); border-radius: 4px; padding: 1px 6px; font: inherit; }
+
+/* Intrarea paginii: ferestrele apar pe rând, ca la pornirea sesiunii. */
+.win { animation: map .6s var(--ease) both; }
+.win:nth-child(2) { animation-delay: .12s; }
+.win:nth-child(3) { animation-delay: .24s; }
+@keyframes map { from { opacity: 0; transform: scale(.92); } }
+
+@media (min-width: 901px) and (min-height: 600px) {
+  body { height: 100vh; }
+}
+
+@media (max-width: 900px) {
+  :root { --rail: 12px; }
+  body { padding: 0 calc(var(--rail) + 8px); }
+  .rail { background: linear-gradient(90deg, #1c1a17, #2a2722 50%, #1c1a17); }
+  .bar .ttl, .bar .clock, .leds { display: none; }
+  .desk { grid-template-columns: 1fr; padding: 28px 0 8px; }
+  .about { display: none; }
+  .tiles { aspect-ratio: auto; max-height: none; display: grid; gap: 14px; }
+  .win, .win[data-slot] { position: relative; left: auto; top: auto; width: 100%; height: auto; aspect-ratio: 16 / 10.4; opacity: 1; }
+  .win .cap kbd { display: none; }
+  .status .keys { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .001s !important; }
 }
 </style>
 </head>
-<body>
-  <header class="top"><span><b>secret-sauce</b> · trei prezentări</span><span>ro · sept 2026</span></header>
+<body data-on="linux">
+<div class="rail l" aria-hidden="true"></div><div class="rail r" aria-hidden="true"></div>
 
-  <section class="band linux">
-    <div>
-      <div class="num">01 / LINUX</div>
-      <h2>Arch, de jos <span>în sus.</span></h2>
-      <p>kernel, syscall, systemd, daemoni, Wayland, floating vs tiling, rice, pacman.</p>
-      <a class="go" href="linux/index.html">deschide →</a>
-      <div class="meta">19 slide-uri · Catppuccin Mocha + albastru Arch · Martian Mono</div>
-    </div>
-    <div class="pics"><img src="assets/thumbs/linux-01.webp" alt="Coperta prezentării Linux"><img src="assets/thumbs/linux-11.webp" alt="Slide: floating vs tiling"></div>
+<header class="bar">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1793d1" d="M11.39.605C10.376 3.092 9.764 4.72 8.635 7.132c.693.734 1.543 1.589 2.923 2.554-1.484-.61-2.496-1.224-3.252-1.86C6.86 10.842 4.596 15.138 0 23.395c3.612-2.085 6.412-3.37 9.021-3.862a6.61 6.61 0 01-.171-1.547l.003-.115c.058-2.315 1.261-4.095 2.687-3.973 1.426.12 2.534 2.096 2.478 4.409a6.52 6.52 0 01-.146 1.243c2.58.505 5.352 1.787 8.914 3.844-.702-1.293-1.33-2.459-1.929-3.57-.943-.73-1.926-1.682-3.933-2.713 1.38.359 2.367.772 3.137 1.234-6.09-11.334-6.582-12.84-8.67-17.74z"/></svg>
+  <nav class="ws" aria-label="Alege prezentarea">
+    <button type="button" data-k="linux" aria-label="1: Linux">1</button>
+    <button type="button" data-k="claude" aria-label="2: Claude">2</button>
+    <button type="button" data-k="agenti" aria-label="3: Agenți">3</button>
+  </nav>
+  <span class="ttl" id="ttl">~/prezentari/linux</span>
+  <span class="right">
+    <span class="leds" aria-hidden="true"><i></i><i></i><i></i></span>
+    <b>secret-sauce</b>
+    <span class="clock" id="clock">--:--</span>
+    <span class="n">3 × 19</span>
+  </span>
+</header>
+
+<main class="desk">
+  <section class="intro">
+    <div class="u">RACK <b>U01–U03</b> · sept 2026 · ro</div>
+    <h1>Ce prezentăm <em>azi?</em></h1>
+    <ol class="idx">
+      <li><a class="linux" data-k="linux" href="linux/index.html"><span class="u">U01</span><span class="t">Arch, de jos <i>în sus.</i></span><span class="m">Catppuccin · Martian Mono · 19 slide-uri</span></a></li>
+      <li><a class="claude" data-k="claude" href="claude/index.html"><span class="u">U02</span><span class="t">Claude, <i>pe bune.</i></span><span class="m">ivory, slate, clay · Newsreader · 19 slide-uri</span></a></li>
+      <li><a class="agenti" data-k="agenti" href="agenti/index.html"><span class="u">U03</span><span class="t">Servere <i>&amp;</i> agenți.</span><span class="m">cerneală, gravuri Hermes · Bodoni · 19 slide-uri</span></a></li>
+    </ol>
+    <p class="about" id="about" aria-live="polite"></p>
   </section>
 
-  <section class="band claude">
-    <div>
-      <div class="num">02 / CLAUDE</div>
-      <h2>Claude, <em>pe bune.</em></h2>
-      <p>tokeni, modele și prețuri, Claude Code, skills, MCP, cheia API și cum n-o scapi.</p>
-      <a class="go" href="claude/index.html">deschide →</a>
-      <div class="meta">19 slide-uri · ivory, slate, clay · Newsreader + Hanken Grotesk</div>
-    </div>
-    <div class="pics"><img src="assets/thumbs/claude-01.webp" alt="Coperta prezentării Claude"><img src="assets/thumbs/claude-09.webp" alt="Slide: sesiune Claude Code"></div>
+  <section class="tiles" aria-label="Previzualizări">
+    <a class="win linux" data-k="linux" data-slot="m" href="linux/index.html">
+      <img src="assets/thumbs/linux-01.webp" alt="Coperta: Arch, de jos în sus" width="960" height="540">
+      <span class="cap"><span>~/linux · kernel → pacman</span><kbd>↵ deschide</kbd></span>
+    </a>
+    <a class="win claude" data-k="claude" data-slot="a" href="claude/index.html">
+      <img src="assets/thumbs/claude-01.webp" alt="Coperta: Claude, pe bune" width="960" height="540">
+      <span class="cap"><span>Claude · tokeni → cheia API</span><kbd>↵ deschide</kbd></span>
+    </a>
+    <a class="win agenti" data-k="agenti" data-slot="b" href="agenti/index.html">
+      <img src="assets/thumbs/agenti-01.webp" alt="Coperta: Servere și agenți" width="960" height="540">
+      <span class="cap"><span>U03 · VPS → OpenClaw, Hermes</span><kbd>↵ deschide</kbd></span>
+    </a>
   </section>
+</main>
 
-  <section class="band agenti">
-    <div>
-      <div class="num">03 / AGENȚI</div>
-      <h2>Servere <i>&amp;</i><br>agenți.</h2>
-      <p>server, porturi, VPS, daemon, apoi OpenClaw și Hermes: ce fac, cum se instalează, ce vinzi cu ei.</p>
-      <a class="go" href="agenti/index.html">deschide →</a>
-      <div class="meta">19 slide-uri · cerneală + gravurile Hermes + roșul OpenClaw · Bodoni Moda</div>
-    </div>
-    <div class="pics"><img src="assets/thumbs/agenti-01.webp" alt="Coperta prezentării despre agenți"><img src="assets/thumbs/agenti-10.webp" alt="Slide: gateway-ul OpenClaw"></div>
-  </section>
+<footer class="status">
+  <span class="spin" aria-hidden="true"><span class="g" id="glyph">✻</span><span class="w" id="word">Alegând…</span></span>
+  <span class="keys"><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> sau <kbd>↑</kbd> <kbd>↓</kbd> alegi · <kbd>↵</kbd> deschizi · în prezentare, <kbd>Esc</kbd> te aduce înapoi aici</span>
+</footer>
 
-  <footer class="keys"><kbd>←</kbd> <kbd>→</kbd> sau spațiu · <kbd>F</kbd> ecran complet · swipe pe telefon · <kbd>Ctrl</kbd>+<kbd>P</kbd> → PDF</footer>
+<script>
+(() => {
+  const order = ['linux', 'claude', 'agenti'];
+  const info = {
+    linux: { path: '~/prezentari/linux', word: 'Compilând kernelul…',
+      about: '<b>kernel, syscall, systemd, daemoni, Wayland, tiling, rice, pacman.</b> Stiva, bootul și ferestrele sunt desenate în SVG și CSS, nu capturi.' },
+    claude: { path: '~/prezentari/claude', word: 'Noodling…',
+      about: '<b>tokeni, modele și prețuri, Claude Code, skills, MCP, cheia API.</b> Prețurile sunt din septembrie 2026, per 1M tokeni.' },
+    agenti: { path: '~/prezentari/agenti', word: 'Pornind daemonul…',
+      about: '<b>server, porturi, VPS, daemon, apoi OpenClaw și Hermes.</b> Ce fac, cum se instalează și ce vinzi cu ei unui client.' },
+  };
+  const $ = (id) => document.getElementById(id);
+  const wins = [...document.querySelectorAll('.win')];
+  const marks = [...document.querySelectorAll('.ws button, .idx a')];
+  const narrow = matchMedia('(max-width: 900px)');
+  let cur = 'linux';
+
+  // Fereastra aleasă devine master; celelalte două se așază în stivă, în ordinea lor.
+  const focus = (k) => {
+    if (!info[k]) return;
+    cur = k;
+    document.body.dataset.on = k;
+    const rest = order.filter((x) => x !== k);
+    wins.forEach((w) => { w.dataset.slot = w.dataset.k === k ? 'm' : (w.dataset.k === rest[0] ? 'a' : 'b'); });
+    marks.forEach((m) => m.classList.toggle('on', m.dataset.k === k));
+    $('ttl').textContent = info[k].path;
+    $('word').textContent = info[k].word;
+    $('about').innerHTML = info[k].about;
+    try { localStorage.setItem('meniu', k); } catch (e) {}
+  };
+
+  // Rândurile din index aleg la hover. Ferestrele nu: s-ar muta sub cursor și ar alege alta.
+  document.querySelectorAll('.idx a').forEach((a) => {
+    a.addEventListener('mouseenter', () => focus(a.dataset.k));
+    a.addEventListener('focus', () => focus(a.dataset.k));
+  });
+  document.querySelectorAll('.ws button').forEach((b) => {
+    b.addEventListener('click', () => focus(b.dataset.k));
+    b.addEventListener('dblclick', () => { location.href = b.dataset.k + '/index.html'; });
+  });
+  // Click pe o fereastră din stivă o aduce în față; click pe master o deschide.
+  wins.forEach((w) => {
+    w.addEventListener('click', (e) => {
+      if (narrow.matches || w.dataset.slot === 'm') return;
+      e.preventDefault();
+      focus(w.dataset.k);
+    });
+    w.addEventListener('focus', () => { if (!narrow.matches) focus(w.dataset.k); });
+  });
+
+  addEventListener('keydown', (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const i = order.indexOf(cur);
+    if (['1', '2', '3'].includes(e.key)) focus(order[+e.key - 1]);
+    else if (['ArrowDown', 'ArrowRight', 'j', 'l'].includes(e.key)) { e.preventDefault(); focus(order[(i + 1) % 3]); }
+    else if (['ArrowUp', 'ArrowLeft', 'k', 'h'].includes(e.key)) { e.preventDefault(); focus(order[(i + 2) % 3]); }
+    else if (e.key === 'Enter' && !e.target.closest('a, button')) location.href = cur + '/index.html';
+  });
+
+  // Ceasul din bară și spinner-ul, cu aceleași glife ca în prezentarea Claude.
+  const tick = () => {
+    const d = new Date();
+    $('clock').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  };
+  tick(); setInterval(tick, 15000);
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const glyphs = ['·', '✢', '✳', '✶', '✻', '✽', '✻', '✶', '✳', '✢'];
+    let g = 0;
+    setInterval(() => { $('glyph').textContent = glyphs[g = (g + 1) % glyphs.length]; }, 120);
+  }
+
+  // Când revii din prezentare cu Esc, meniul ține minte ce ai ales ultima dată.
+  let last = null;
+  try { last = localStorage.getItem('meniu'); } catch (e) {}
+  focus(info[last] ? last : 'linux');
+})();
+</script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 # secret-sauce
 
-Trei prezentări în română, fiecare cu tema ei. Deschide `index.html`.
+Trei prezentări în română, fiecare cu tema ei. Deschide `index.html`: e meniul din care alegi prezentarea.
+
+Online (GitHub Pages): `https://elod3.github.io/prezentare..../`
 
 | # | Prezentare | Temă | Fonturi |
 |---|---|---|---|
@@ -10,11 +12,14 @@ Trei prezentări în română, fiecare cu tema ei. Deschide `index.html`.
 
 ## Taste
 
-`←` `→` / spațiu / click · `F` ecran complet · swipe pe telefon (ținut orizontal) · `Ctrl+P` → PDF, un slide pe pagină.
+**Meniu:** `1` `2` `3` sau `↑` `↓` alegi · `↵` sau click deschizi · click pe o fereastră mică o aduce în față.
+
+**Prezentare:** `←` `→` / spațiu / click · `F` ecran complet · `Esc` înapoi la meniu · swipe pe telefon (ținut orizontal) · `Ctrl+P` → PDF, un slide pe pagină.
 `#7` la finalul adresei deschide direct slide-ul 7.
 
 ## Decizia estetică
 
+- **Meniul** e un amestec din cele trei, fiecare cu un rol: Linux dă scheletul (bara waybar, ferestre care se așază ca în Hyprland: cea aleasă devine master, celelalte trec în stivă), Claude dă vocea (titlul în Newsreader, spinner-ul cu glife din Claude Code), Agenți dă rama (cerneala, șinele de rack, numerotarea U01–U03). Fiecare rând din index e scris cu fontul prezentării lui, iar accentul paginii ia culoarea prezentării alese. Meniul ține minte ultima alegere.
 - **Public:** un prieten care pornește de la zero. Puține cuvinte pe slide; restul îl spui tu.
 - **Linux:** arată ca un desktop tiling adevărat. Stiva de straturi, bootul, inelele kernelului, ferestrele care se așază singure: toate sunt SVG și CSS animate, nu imagini.
 - **Claude:** documentar, editorial, în stilul Anthropic. Elementul care rămâne în minte: scânteia care se rotește și spinner-ul din Claude Code, cu glifele și verbele lui.
@@ -29,10 +34,14 @@ Trei prezentări în română, fiecare cu tema ei. Deschide `index.html`.
 - Fonturile sunt găzduite local (`assets/fonts`, subseturi latin + latin-ext pentru diacritice). Fonturile Anthropic nu sunt libere, așa că Newsreader și Hanken Grotesk țin locul lor.
 - La Bodoni, cifrele și cratima sunt linii foarte subțiri și dispar pe proiector, așa că `bodoni-core.css` le trimite pe Newsreader.
 
+## GitHub Pages
+
+`.github/workflows/pages.yml` publică site-ul la fiecare push pe `main`. O singură dată: **Settings → Pages → Source: GitHub Actions**. Repo-ul e privat, iar Pages pe repo privat cere GitHub Pro; altfel repo-ul trebuie făcut public.
+
 ## Structură
 
 ```
-index.html          pagina de start
+index.html          meniul
 deck/               motorul comun (scalare 1600×900, taste, animații de intrare)
 linux/ claude/ agenti/
 assets/             fonturi, capturi, gravuri, miniaturi
