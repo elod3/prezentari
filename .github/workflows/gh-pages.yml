@@ -1,0 +1,19 @@
+# Site-ul se publică din ramura gh-pages. La fiecare push pe main, gh-pages primește exact același conținut.
+name: Sincronizează gh-pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git push --force origin HEAD:gh-pages
