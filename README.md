@@ -6,7 +6,7 @@ Online (GitHub Pages): **https://elod3.github.io/prezentari/**
 
 | # | Prezentare | Temă | Fonturi |
 |---|---|---|---|
-| 01 | [Arch, de jos în sus](linux/index.html) | Catppuccin Mocha + albastrul Arch, bara de sus e un waybar (workspace = capitol) | Martian Mono, JetBrains Mono |
+| 01 | [Linux, de jos în sus](linux/index.html) | Catppuccin Mocha + albastrul Arch, bara de sus e un waybar (workspace = capitol). Linux în general, cu Arch ca exemplu; recomandarea de distribuție e EndeavourOS | Martian Mono, JetBrains Mono |
 | 02 | [Claude, pe bune](claude/index.html) | paleta Anthropic: ivory, slate, clay | Newsreader, Hanken Grotesk, JetBrains Mono |
 | 03 | [Servere & agenți](agenti/index.html) | camera serverelor noaptea: șine de rack, gravurile Hermes, roșul OpenClaw | Bodoni Moda, IBM Plex Mono |
 
@@ -32,7 +32,7 @@ Deschide-le pe telefon cât proiectezi. Pe laptop, `N` în prezentare le deschid
 
 ## De unde vin materialele
 
-- Capturi: KDE (kde.org), Hyprland (concursul de ricing de pe hypr.land), Claude Code (claude.com), WhatsApp cu OpenClaw (docs.openclaw.ai).
+- Capturi: KDE (kde.org), Hyprland (laptopul autorului, EndeavourOS, septembrie 2026), Claude Code (claude.com), WhatsApp cu OpenClaw (docs.openclaw.ai).
 - Gravuri Hermes: hermes-agent.nousresearch.com. Logo OpenClaw: docs.openclaw.ai. Logo Arch: Simple Icons.
 - Prețuri și modele Claude: septembrie 2026, per 1M tokeni (intrare / ieșire).
 - Comenzile de instalare OpenClaw și Hermes: README-urile oficiale, septembrie 2026.

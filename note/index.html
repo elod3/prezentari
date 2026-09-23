@@ -114,12 +114,12 @@ footer { padding-block: 40px 60px; color: var(--ash); font-size: 14px; }
 
 <!-- ————————————————————————— LINUX ————————————————————————— -->
 <section id="linux">
-  <h2>Arch, de jos <i>în sus.</i></h2>
-  <p class="meta">01 · 19 slide-uri · urci de la hardware la ferestre</p>
+  <h2>Linux, de jos <i>în sus.</i></h2>
+  <p class="meta">01 · 20 slide-uri · urci de la hardware la ferestre</p>
 
   <article id="linux-1"><span class="n">1</span><div>
     <h3>Copertă</h3>
-    <p>„Azi desfacem Linux-ul strat cu strat: de la hardware până la ferestrele pe care le vezi. Eu folosesc Arch cu Hyprland, deci toate exemplele sunt de acolo.”</p>
+    <p>„Azi desfacem Linux-ul strat cu strat: de la hardware până la ferestrele pe care le vezi. Aproape tot ce arăt e la fel pe orice distribuție. Eu folosesc Arch, prin EndeavourOS, cu Hyprland, deci exemplele sunt de acolo.”</p>
     <p>Jos se vede un boot adevărat: kernelul pornește, apoi rulează Hyprland. Lasă animația să se termine înainte să treci mai departe.</p>
   </div></article>
 
@@ -190,7 +190,7 @@ footer { padding-block: 40px 60px; color: var(--ash); font-size: 14px; }
 
   <article id="linux-12"><span class="n">12</span><div>
     <h3>În realitate</h3>
-    <p>Stânga: KDE Plasma, floating, cu tot inclus. Seamănă cu Windows, e bun ca prim Linux. Dreapta: un desktop Hyprland dintr-un concurs de ricing. Cineva l-a construit piesă cu piesă.</p>
+    <p>Stânga: KDE Plasma, floating, cu tot inclus. Seamănă cu Windows, e bun ca prim Linux. Dreapta: laptopul meu, cu Hyprland. Trei programe deschise (fastfetch, btop și chiar prezentarea asta) s-au așezat singure unul lângă altul, fără să le mut eu.</p>
   </div></article>
 
   <article id="linux-13"><span class="n">13</span><div>
@@ -213,27 +213,35 @@ footer { padding-block: 40px 60px; color: var(--ash); font-size: 14px; }
   </div></article>
 
   <article id="linux-16"><span class="n">16</span><div>
+    <h3>Distribuții</h3>
+    <p>Kernelul e același peste tot. O <b>distribuție</b> e pachetul din jurul lui: cum instalezi programe, cât de des vin update-urile, ce desktop primești din start. Trei familii mari:</p>
+    <p><b>Debian</b> (Ubuntu, Mint): <code>apt</code>, versiuni fixe; Ubuntu scoate o versiune LTS la doi ani. <b>Fedora</b>: <code>dnf</code>, versiune nouă cam la șase luni. <b>Arch</b>: <code>pacman</code>, rolling release, adică primești update-uri mereu, fără versiuni mari.</p>
+    <p class="k">Recomandarea mea: EndeavourOS. E Arch, cu tot ce ai văzut aici, dar se instalează dintr-un installer grafic, nu din terminal.</p>
+    <p class="q"><b>„Care e cea mai ușoară?”</b> Mint sau Ubuntu, dacă vrei să nu te atingi de terminal. EndeavourOS, dacă vrei să înveți cum merge sistemul și să fie mereu la zi.</p>
+  </div></article>
+
+  <article id="linux-17"><span class="n">17</span><div>
     <h3>pacman &amp; AUR</h3>
-    <p><b>pacman</b> instalează programe din depozitele oficiale Arch: verificate, semnate, gata compilate. <b>AUR</b> e depozitul comunității: nu are programele în sine, are rețete (PKGBUILD) după care <code>yay</code> sau <code>paru</code> descarcă și compilează programul.</p>
+    <p><b>pacman</b> e managerul de pachete al lui Arch (pe Ubuntu faci același lucru cu <code>apt</code>). Instalează programe din depozitele oficiale: verificate, semnate, gata compilate. <b>AUR</b> e depozitul comunității: nu are programele în sine, are rețete (PKGBUILD) după care <code>yay</code> sau <code>paru</code> descarcă și compilează programul.</p>
     <p>Arch e „rolling release”: nu există versiuni mari ca Windows 10 → 11, primești update-uri mereu, cu <code>-Syu</code>.</p>
     <p class="k">În AUR poate urca oricine orice. Citește rețeta înainte să instalezi.</p>
   </div></article>
 
-  <article id="linux-17"><span class="n">17</span><div>
+  <article id="linux-18"><span class="n">18</span><div>
     <h3>Instalarea</h3>
-    <p>Treci repede prin cei 8 pași: pornești de pe stick, te conectezi la internet, faci partițiile, instalezi sistemul de bază, intri în el, pui bootloader-ul, îți faci user, restart. Totul în terminal.</p>
-    <p class="k">Scurtătura e <code>archinstall</code>: un meniu ghidat, gata în vreo 10 minute.</p>
+    <p>Așa se instalează Arch de mână. Treci repede prin cei 8 pași: pornești de pe stick, te conectezi la internet, faci partițiile, instalezi sistemul de bază, intri în el, pui bootloader-ul, îți faci user, restart. Totul în terminal.</p>
+    <p class="k">Dacă vrei să-l încerci, nu începe așa: ia <b>EndeavourOS</b>. Pui stick-ul, dai click prin installer și în vreo 15 minute ai tot Arch, cu desktopul ales. (Mai există <code>archinstall</code>, un meniu ghidat în terminal.)</p>
     <p class="q"><b>„De unde învăț?”</b> Wiki-ul Arch (wiki.archlinux.org), pagina „Installation guide”. E cea mai bună documentație de Linux, chiar dacă folosești altă distribuție.</p>
   </div></article>
 
-  <article id="linux-18"><span class="n">18</span><div>
+  <article id="linux-19"><span class="n">19</span><div>
     <h3>Fițuica <span class="q">· se poate sări</span></h3>
     <p>Nu le citi pe toate. „Astea sunt comenzile pe care le folosesc zilnic: faceți-i poză.” Poți arăta două: <code>btop</code> (ce mănâncă procesorul) și <code>man</code> (manualul oricărei comenzi).</p>
   </div></article>
 
-  <article id="linux-19"><span class="n">19</span><div>
+  <article id="linux-20"><span class="n">20</span><div>
     <h3>i use arch btw</h3>
-    <p>Ecranul arată ca fastfetch, rezumatul pe care îl postează toată lumea cu desktopul ei. Glumă de final: „i use arch btw” e meme-ul oficial al comunității.</p>
+    <p>Ecranul arată ca fastfetch, rezumatul pe care îl postează toată lumea cu desktopul ei, aici cu logo-ul EndeavourOS. Glumă de final: „i use arch btw” e meme-ul oficial al comunității, și rămâne adevărat: EndeavourOS e tot Arch.</p>
     <p>Treci la întrebări, sau spune: „Asta a fost mașina. Acum: AI-ul care rulează pe ea.”</p>
   </div></article>
 </section>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Arch, de jos în sus</title>
-<meta name="description" content="Cum e construit Linux: kernel, systemd, daemoni, Wayland, window manageri floating și tiling, pacman.">
+<title>Linux, de jos în sus</title>
+<meta name="description" content="Cum e construit Linux: kernel, systemd, daemoni, Wayland, window manageri floating și tiling, distribuții, pacman.">
 <link rel="icon" href="../assets/linux/arch-logo.svg">
 <link rel="stylesheet" href="../assets/fonts/martian.css">
 <link rel="stylesheet" href="../assets/fonts/jetbrains.css">
@@ -276,7 +276,20 @@ code, .mono { font-family: var(--f-mono); }
 @keyframes press { 0%, 70%, 100% { transform: none; border-bottom-width: 6px; } 76%, 86% { transform: translateY(4px); border-bottom-width: 2px; } }
 .combo .res { margin-left: 8px; color: var(--text); }
 
-/* ——— S16 pacman ——— */
+/* ——— S16 distribuții: tabel, nu carduri. Rândul Arch e cel aprins. ——— */
+.distros { position: absolute; left: 110px; width: calc(100% - 220px); top: 300px; border-collapse: collapse; font: 500 22px/1.3 var(--f-mono); }
+.distros th { text-align: left; font: 500 15px var(--f-mono); color: var(--ov); letter-spacing: .06em; padding: 0 24px 14px 0; border-bottom: 2px solid var(--s1); }
+.distros td { padding: 28px 24px 28px 0; border-bottom: 1px solid var(--s0); vertical-align: top; }
+.distros td:first-child { font: 800 26px var(--f-disp); letter-spacing: -.02em; color: var(--text); width: 250px; }
+.distros td code { color: var(--peach); font-weight: 700; }
+.distros .cap { display: block; margin-top: 6px; }
+.distros tr.hot td { background: rgba(23,147,209,.10); }
+.distros tr.hot td:first-child { color: var(--arch); box-shadow: inset 4px 0 0 var(--arch); padding-left: 20px; }
+.distros .pick { display: inline-block; margin-left: 12px; padding: 3px 10px; border-radius: 6px; background: var(--arch); color: var(--crust); font: 700 14px var(--f-mono); vertical-align: 3px; }
+.kern-note { position: absolute; left: 110px; bottom: 84px; margin: 0; font: 500 18px var(--f-mono); color: var(--ov); }
+.kern-note b { color: var(--text); }
+
+/* ——— S17 pacman ——— */
 .pac { position: absolute; left: 110px; right: 110px; top: 250px; height: 300px; }
 .pac svg { width: 100%; height: 100%; overflow: visible; }
 .pac text { font-family: var(--f-mono); }
@@ -285,7 +298,7 @@ code, .mono { font-family: var(--f-mono); }
 .pc code { display: block; font: 700 21px var(--f-mono); color: var(--text); }
 .pc span { font: 400 16px var(--f-mono); color: var(--ov); }
 
-/* ——— S17 instalare ——— */
+/* ——— S18 instalare ——— */
 .steps { position: absolute; left: 110px; right: 110px; top: 280px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
 .step { background: var(--mantle); border-radius: 12px; padding: 20px 20px 22px; border: 2px solid var(--s0); min-height: 188px; display: flex; flex-direction: column; }
 .step .i { font: 800 18px var(--f-disp); color: var(--arch); }
@@ -293,8 +306,9 @@ code, .mono { font-family: var(--f-mono); }
 .step code { margin-top: auto; font: 500 17px var(--f-mono); color: var(--green); }
 .shortcut { position: absolute; left: 110px; right: 110px; bottom: 70px; display: flex; align-items: center; gap: 24px; font: 500 20px var(--f-mono); color: var(--sub); }
 .shortcut code { font: 700 24px var(--f-mono); color: var(--crust); background: var(--peach); padding: 10px 18px; border-radius: 8px; }
+.shortcut code.eos { background: var(--mauve); }
 
-/* ——— S18 fițuică ——— */
+/* ——— S19 fițuică ——— */
 .cheat { position: absolute; left: 110px; right: 110px; top: 250px; columns: 3; column-gap: 50px; }
 .cheat div { break-inside: avoid; display: grid; grid-template-columns: 1fr; padding: 11px 0; border-bottom: 1px solid var(--s0); }
 .cheat code { font: 700 20px var(--f-mono); color: var(--text); }
@@ -302,14 +316,15 @@ code, .mono { font-family: var(--f-mono); }
 .cheat h4 { margin: 0 0 6px; font: 800 18px var(--f-disp); color: var(--arch); letter-spacing: 0; }
 .cheat h4:not(:first-child) { margin-top: 26px; }
 
-/* ——— S19 final ——— */
+/* ——— S20 final ——— */
 .fetch { position: absolute; left: 110px; top: 190px; display: flex; gap: 60px; font: 500 22px/1.42 var(--f-mono); }
-.fetch pre { margin: 0; font: 700 20px/1.12 var(--f-mono); color: var(--arch); }
+.fetch pre { margin: 0; font: 700 20px/1.12 var(--f-mono); color: var(--mauve); }
 .fetch .kv b { color: var(--arch); }
 .fetch .pal { display: flex; margin-top: 18px; }
 .fetch .pal i { width: 42px; height: 26px; }
 .btw { position: absolute; left: 110px; bottom: 90px; font: 800 84px var(--f-disp); letter-spacing: -.05em; }
 .btw span { color: var(--s1); }
+.btw small { display: block; margin-top: 14px; font: 500 22px var(--f-mono); letter-spacing: 0; color: var(--ov); }
 </style>
 </head>
 <body>
@@ -319,12 +334,12 @@ code, .mono { font-family: var(--f-mono); }
     <svg class="logo" viewBox="0 0 24 24"><path fill="#1793d1" d="M11.39.605C10.376 3.092 9.764 4.72 8.635 7.132c.693.734 1.543 1.589 2.923 2.554-1.484-.61-2.496-1.224-3.252-1.86C6.86 10.842 4.596 15.138 0 23.395c3.612-2.085 6.412-3.37 9.021-3.862a6.61 6.61 0 01-.171-1.547l.003-.115c.058-2.315 1.261-4.095 2.687-3.973 1.426.12 2.534 2.096 2.478 4.409a6.52 6.52 0 01-.146 1.243c2.58.505 5.352 1.787 8.914 3.844-.702-1.293-1.33-2.459-1.929-3.57-.943-.73-1.926-1.682-3.933-2.713 1.38.359 2.367.772 3.137 1.234-6.09-11.334-6.582-12.84-8.67-17.74z"/></svg>
     <div class="ws" id="ws"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div>
     <span class="ttl" id="ttl"></span>
-    <div class="right"><span><b>arch</b></span><span id="clk">--:--</span><span class="n" id="num"></span></div>
+    <div class="right"><span><b>linux</b></span><span id="clk">--:--</span><span class="n" id="num"></span></div>
   </div>
 
   <!-- 1 · copertă -->
   <section class="slide cover" data-ws="1" data-t="~/linux">
-    <h1 class="in" style="--d:.1s">Arch,<br><span class="dim">de jos</span><br>în sus.</h1>
+    <h1 class="in" style="--d:.1s">Linux,<br><span class="dim">de jos</span><br>în sus.</h1>
     <svg class="archbig" viewBox="-0.5 0 25 24.5" aria-hidden="true">
       <path class="draw" style="--d:.3s" d="M11.39.605C10.376 3.092 9.764 4.72 8.635 7.132c.693.734 1.543 1.589 2.923 2.554-1.484-.61-2.496-1.224-3.252-1.86C6.86 10.842 4.596 15.138 0 23.395c3.612-2.085 6.412-3.37 9.021-3.862a6.61 6.61 0 01-.171-1.547l.003-.115c.058-2.315 1.261-4.095 2.687-3.973 1.426.12 2.534 2.096 2.478 4.409a6.52 6.52 0 01-.146 1.243c2.58.505 5.352 1.787 8.914 3.844-.702-1.293-1.33-2.459-1.929-3.57-.943-.73-1.926-1.682-3.933-2.713 1.38.359 2.367.772 3.137 1.234-6.09-11.334-6.582-12.84-8.67-17.74z"/>
       <path class="fillme" d="M11.39.605C10.376 3.092 9.764 4.72 8.635 7.132c.693.734 1.543 1.589 2.923 2.554-1.484-.61-2.496-1.224-3.252-1.86C6.86 10.842 4.596 15.138 0 23.395c3.612-2.085 6.412-3.37 9.021-3.862a6.61 6.61 0 01-.171-1.547l.003-.115c.058-2.315 1.261-4.095 2.687-3.973 1.426.12 2.534 2.096 2.478 4.409a6.52 6.52 0 01-.146 1.243c2.58.505 5.352 1.787 8.914 3.844-.702-1.293-1.33-2.459-1.929-3.57-.943-.73-1.926-1.682-3.933-2.713 1.38.359 2.367.772 3.137 1.234-6.09-11.334-6.582-12.84-8.67-17.74z"/>
@@ -371,7 +386,7 @@ code, .mono { font-family: var(--f-mono); }
       <div class="bnode" style="left:40%;--d:2s"><div class="dot">02</div><b>Bootloader</b><span>systemd-boot<br>GRUB</span></div>
       <div class="bnode" style="left:60%;--d:2.8s"><div class="dot">03</div><b>Kernel</b><span>+ initramfs</span></div>
       <div class="bnode" style="left:80%;--d:3.6s"><div class="dot">04</div><b>systemd</b><span>PID 1<br>pornește tot</span></div>
-      <div class="bnode last" style="left:100%;--d:4.5s"><div class="dot">05</div><b>Hyprland</b><span>login → desktop</span></div>
+      <div class="bnode last" style="left:100%;--d:4.5s"><div class="dot">05</div><b>Desktop</b><span>Hyprland · KDE<br>GNOME</span></div>
     </div>
     <div class="term in" style="position:absolute;left:110px;right:110px;bottom:84px;--d:4.8s">
       <span class="tag">cât a durat · exemplu</span>
@@ -608,8 +623,8 @@ code, .mono { font-family: var(--f-mono); }
         <figcaption><b>KDE Plasma</b> · floating · tot inclus<em>captură: kde.org</em></figcaption>
       </figure>
       <figure class="shot in" style="--d:.4s;margin:0">
-        <img src="../assets/linux/hypr-rice.webp" alt="Desktop Hyprland: ferestre așezate automat, fără suprapuneri" loading="lazy">
-        <figcaption><b>Hyprland</b> · tiling · construit de mână<em>captură: concursul de ricing hypr.land (amadeus)</em></figcaption>
+        <img src="../assets/linux/hypr-tiling.webp" alt="Desktop Hyprland: fastfetch, btop și browserul, așezate automat unul lângă altul, fără suprapuneri" loading="lazy">
+        <figcaption><b>Hyprland</b> · tiling · construit de mână<em>captură: laptopul meu, EndeavourOS</em></figcaption>
       </figure>
     </div>
   </section>
@@ -696,9 +711,23 @@ code, .mono { font-family: var(--f-mono); }
     </div>
   </section>
 
-  <!-- 16 · pacman + AUR -->
+  <!-- 16 · distribuții -->
+  <section class="slide" data-ws="6" data-t="distro">
+    <h2 class="in">Distribuții.<small>același kernel · altă rețetă în jurul lui</small></h2>
+    <table class="distros in" style="--d:.3s">
+      <thead><tr><th>FAMILIA</th><th>EXEMPLE</th><th>PACHETE</th><th>UPDATE-URI</th></tr></thead>
+      <tbody>
+        <tr><td>Debian</td><td>Ubuntu · Mint<span class="cap">cele mai folosite pe desktop</span></td><td><code>apt</code></td><td>versiuni fixe<span class="cap">Ubuntu LTS: una la 2 ani</span></td></tr>
+        <tr><td>Fedora</td><td>Fedora<span class="cap">sponsorizată de Red Hat</span></td><td><code>dnf</code></td><td>versiune nouă<span class="cap">la ~6 luni</span></td></tr>
+        <tr class="hot"><td>Arch</td><td>Arch · EndeavourOS<span class="pick">recomand</span><span class="cap">EndeavourOS = Arch cu installer grafic</span></td><td><code>pacman</code></td><td>rolling<span class="cap">mereu la zi, fără versiuni mari</span></td></tr>
+      </tbody>
+    </table>
+    <p class="kern-note in" style="--d:.9s">Tot ce am văzut până aici (<b>kernel, systemd, Wayland, tiling</b>) e la fel pe toate trei.</p>
+  </section>
+
+  <!-- 17 · pacman + AUR -->
   <section class="slide" data-ws="6" data-t="pacman">
-    <h2 class="in">pacman<span class="mute"> &amp; </span><span style="color:#fab387">AUR</span></h2>
+    <h2 class="in">pacman<span class="mute"> &amp; </span><span style="color:#fab387">AUR</span><small>managerul de pachete din Arch · Ubuntu are apt, Fedora dnf</small></h2>
     <div class="pac">
       <svg viewBox="0 0 1380 300" aria-hidden="true">
         <g class="in" style="--d:.2s">
@@ -739,9 +768,9 @@ code, .mono { font-family: var(--f-mono); }
     </div>
   </section>
 
-  <!-- 17 · instalare -->
+  <!-- 18 · instalare -->
   <section class="slide" data-ws="6" data-t="install">
-    <h2 class="in">Instalarea.<small>de pe stick, în terminal</small></h2>
+    <h2 class="in">Instalarea.<small>Arch, de mână, în terminal</small></h2>
     <div class="steps" data-stagger=".3,.1">
       <div class="step in"><span class="i">01</span><b>Boot de pe ISO</b><code>archlinux.iso</code></div>
       <div class="step in"><span class="i">02</span><b>Internet</b><code>iwctl</code></div>
@@ -752,10 +781,10 @@ code, .mono { font-family: var(--f-mono); }
       <div class="step in"><span class="i">07</span><b>User + parolă</b><code>useradd -m tu</code></div>
       <div class="step in" style="border-color:#a6e3a1"><span class="i" style="color:#a6e3a1">08</span><b>Reboot</b><code>pacman -S hyprland</code></div>
     </div>
-    <div class="shortcut in" style="--d:1.4s">scurtătură →<code>archinstall</code><span>meniu ghidat, 10 minute</span></div>
+    <div class="shortcut in" style="--d:1.4s">sau, recomandarea mea →<code class="eos">EndeavourOS</code><span>tot Arch, cu installer grafic · 15 minute</span></div>
   </section>
 
-  <!-- 18 · fițuică -->
+  <!-- 19 · fițuică -->
   <section class="slide" data-ws="6" data-t="fițuică">
     <h2 class="in" style="font-size:64px">Fițuica.</h2>
     <div class="cheat in" style="--d:.2s">
@@ -773,7 +802,7 @@ code, .mono { font-family: var(--f-mono); }
       <div><code>systemctl enable --now X</code><span>pornește + la boot</span></div>
       <div><code>journalctl -b -p err</code><span>erorile de azi</span></div>
       <h4>sistem</h4>
-      <div><code>sudo pacman -Syu</code><span>update</span></div>
+      <div><code>sudo pacman -Syu</code><span>update · pe Ubuntu: apt upgrade</span></div>
       <div><code>df -h · free -h</code><span>disc · RAM</span></div>
       <div><code>lsblk</code><span>discurile</span></div>
       <div><code>ip a</code><span>IP-ul tău</span></div>
@@ -781,32 +810,29 @@ code, .mono { font-family: var(--f-mono); }
     </div>
   </section>
 
-  <!-- 19 · final -->
+  <!-- 20 · final -->
   <section class="slide" data-ws="6" data-t="btw">
     <div class="fetch">
-<pre class="in" aria-hidden="true">                   -`
-                  .o+`
-                 `ooo/
-                `+oooo:
-               `+oooooo:
-               -+oooooo+:
-             `/:-:++oooo+:
-            `/++++/+++++++:
-           `/++++++++++++++:
-          `/+++ooooooooooooo/`
-         ./ooosssso++osssssso+`
-        .oossssso-````/ossssss+`
-       -osssssso.      :ssssssso.
-      :osssssss/        osssso+++.
-     /ossssssss/        +ssssooo/-
-   `/ossssso+/:-        -:/+osssso+-
-  `+sso+:-`                 `.-/+oso:
- `++:.                           `-/+/
- .`                                 `/</pre>
+<pre class="in" aria-hidden="true">                     ./o.
+                   ./sssso-
+                 `:osssssss+-
+               `:+sssssssssso/.
+             `-/ossssssssssssso/.
+           `-/+sssssssssssssssso+:`
+         `-:/+sssssssssssssssssso+/.
+       `.://osssssssssssssssssssso++-
+      .://+ssssssssssssssssssssssso++:
+    .:///ossssssssssssssssssssssssso++:
+  `:////ssssssssssssssssssssssssssso+++.
+`-////+ssssssssssssssssssssssssssso++++-
+ `..-+oosssssssssssssssssssssssso+++++/`
+   ./++++++++++++++++++++++++++++++/:.
+  `:::::::::::::::::::::::::------``</pre>
       <div class="kv in" style="--d:.3s">
-        <div><b>tu</b>@<b>arch</b></div>
+        <div><b>tu</b>@<b>endeavour</b></div>
         <div class="mute">----------</div>
-        <div><b>OS</b>: Arch Linux x86_64</div>
+        <div><b>OS</b>: EndeavourOS x86_64</div>
+        <div><b>Bază</b>: Arch Linux</div>
         <div><b>Kernel</b>: linux</div>
         <div><b>Init</b>: systemd</div>
         <div><b>WM</b>: Hyprland (Wayland)</div>
@@ -816,7 +842,7 @@ code, .mono { font-family: var(--f-mono); }
         <div class="pal"><i style="background:#1e1e2e"></i><i style="background:#f38ba8"></i><i style="background:#a6e3a1"></i><i style="background:#f9e2af"></i><i style="background:#89b4fa"></i><i style="background:#cba6f7"></i><i style="background:#94e2d5"></i><i style="background:#cdd6f4"></i></div>
       </div>
     </div>
-    <div class="btw in" style="--d:.8s">i use arch <span>btw.</span></div>
+    <div class="btw in" style="--d:.8s">i use arch <span>btw.</span><small>(prin EndeavourOS, care e tot Arch)</small></div>
   </section>
 
 </div>
