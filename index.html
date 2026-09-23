@@ -163,6 +163,8 @@ a { color: inherit; text-decoration: none; }
 .status .spin .g { display: inline-block; width: 1.1em; text-align: center; font-size: 15px; }
 .status .spin .w { color: var(--bone2); }
 .status .keys { margin-left: auto; }
+.status .notes { color: var(--bone2); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 4px; }
+.status .notes:hover, .status .notes:focus-visible { color: var(--bone); text-decoration-color: var(--acc); outline: none; }
 .status kbd { color: var(--bone); border: 1px solid var(--rule); border-radius: 4px; padding: 1px 6px; font: inherit; }
 
 /* Intrarea paginii: ferestrele apar pe rând, ca la pornirea sesiunii. */
@@ -242,6 +244,7 @@ a { color: inherit; text-decoration: none; }
 
 <footer class="status">
   <span class="spin" aria-hidden="true"><span class="g" id="glyph">✻</span><span class="w" id="word">Alegând…</span></span>
+  <a class="notes" href="note/index.html">note de prezentator</a>
   <span class="keys"><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> sau <kbd>↑</kbd> <kbd>↓</kbd> alegi · <kbd>↵</kbd> deschizi · în prezentare, <kbd>Esc</kbd> te aduce înapoi aici</span>
 </footer>
 

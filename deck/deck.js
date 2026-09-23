@@ -1,4 +1,5 @@
 // Motorul comun. ← → spațiu PgUp PgDn Home End, F = ecran complet, Esc = înapoi la meniu,
+// N = notele de prezentator la slide-ul curent (fereastra lor urmează slide-urile),
 // click pe jumătatea dreaptă = înainte, swipe pe telefon.
 (() => {
   const stage = document.querySelector('.stage');
@@ -24,6 +25,11 @@
     [...box.children].forEach((c, i) => c.style.setProperty('--d', (start + i * step).toFixed(2) + 's'));
   });
 
+  // Numele prezentării vine din folder: linux/, claude/, agenti/. Notele au ancore #linux-7.
+  const name = location.pathname.replace(/index\.html$/, '').split('/').filter(Boolean).pop();
+  let notes = null;
+  const noteUrl = (i) => '../note/index.html#' + name + '-' + (i + 1);
+
   const go = (n) => {
     n = Math.max(0, Math.min(total - 1, n));
     slides.forEach((el, k) => {
@@ -35,6 +41,7 @@
     document.documentElement.style.setProperty('--progress', total > 1 ? n / (total - 1) : 1);
     document.dispatchEvent(new CustomEvent('slide', { detail: { index: n, total, el: slides[n] } }));
     history.replaceState(null, '', '#' + (n + 1));
+    try { if (notes && !notes.closed) notes.location.replace(noteUrl(n)); } catch (e) {}
   };
 
   addEventListener('keydown', (e) => {
@@ -45,6 +52,7 @@
     else if (k === 'Home') go(0);
     else if (k === 'End') go(total - 1);
     else if (k === 'Escape' && !document.fullscreenElement) location.href = '../index.html';
+    else if (k === 'n' || k === 'N') notes = window.open(noteUrl(cur), 'note');
     else if (k === 'f' || k === 'F') {
       if (document.fullscreenElement) document.exitFullscreen();
       else document.documentElement.requestFullscreen?.();
@@ -72,7 +80,7 @@
 
   const hint = document.createElement('div');
   hint.className = 'hint';
-  hint.textContent = '← →  ·  F  ·  Esc meniu';
+  hint.textContent = '← →  ·  F  ·  N note  ·  Esc meniu';
   document.body.append(hint);
   setTimeout(() => hint.classList.add('gone'), 3500);
 

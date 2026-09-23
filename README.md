@@ -10,11 +10,16 @@ Online (GitHub Pages): **https://elod3.github.io/prezentari/**
 | 02 | [Claude, pe bune](claude/index.html) | paleta Anthropic: ivory, slate, clay | Newsreader, Hanken Grotesk, JetBrains Mono |
 | 03 | [Servere & agenți](agenti/index.html) | camera serverelor noaptea: șine de rack, gravurile Hermes, roșul OpenClaw | Bodoni Moda, IBM Plex Mono |
 
+## Note de prezentator
+
+`note/index.html` (link în meniu, jos): ce spui la fiecare slide, fraza de ținut minte și ce răspunzi la întrebări.
+Deschide-le pe telefon cât proiectezi. Pe laptop, `N` în prezentare le deschide la slide-ul curent și le mută odată cu slide-urile.
+
 ## Taste
 
 **Meniu:** `1` `2` `3` sau `↑` `↓` alegi · `↵` sau click deschizi · click pe o fereastră mică o aduce în față.
 
-**Prezentare:** `←` `→` / spațiu / click · `F` ecran complet · `Esc` înapoi la meniu · swipe pe telefon (ținut orizontal) · `Ctrl+P` → PDF, un slide pe pagină.
+**Prezentare:** `←` `→` / spațiu / click · `F` ecran complet · `N` note · `Esc` înapoi la meniu · swipe pe telefon (ținut orizontal) · `Ctrl+P` → PDF, un slide pe pagină.
 `#7` la finalul adresei deschide direct slide-ul 7.
 
 ## Decizia estetică

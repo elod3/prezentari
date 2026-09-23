@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Note de prezentator</title>
+<meta name="description" content="Ce spui la fiecare slide din cele trei prezentări: Linux, Claude, servere și agenți.">
+<link rel="stylesheet" href="../assets/fonts/newsreader.css">
+<link rel="stylesheet" href="../assets/fonts/hanken.css">
+<link rel="stylesheet" href="../assets/fonts/jetbrains.css">
+<style>
+/* Notele se citesc pe telefon, în timp ce laptopul proiectează.
+   Fundalul și rama vin din meniu; fiecare prezentare își păstrează accentul. */
+:root {
+  --ink: #0e0d0b; --ink2: #171613; --rule: #2c2a25;
+  --bone: #ece6d8; --bone2: #c9c2b2; --ash: #8a8374;
+  --arch: #1793d1; --clay: #d97757; --red: #ff4d4d;
+  --f-serif: 'Newsreader', Georgia, serif;
+  --f-body: 'Hanken Grotesk', system-ui, sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: 64px; }
+body {
+  margin: 0; background: var(--ink); color: var(--bone);
+  font: 17px/1.55 var(--f-body); -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 760px; margin: 0 auto; padding-inline: 18px; }
+
+/* tab-urile de sus: sari direct la prezentarea pe care o ții */
+nav {
+  position: sticky; top: 0; z-index: 5; background: var(--ink);
+  border-bottom: 1px solid var(--rule); padding-top: env(safe-area-inset-top, 0px);
+}
+nav .wrap { display: flex; gap: 6px; padding-block: 10px; align-items: center; }
+nav a {
+  font: 600 14px/1 var(--f-mono); color: var(--ash); text-decoration: none;
+  padding: 9px 12px; border-radius: 6px; border: 1px solid var(--rule);
+}
+nav a:hover, nav a:focus-visible { color: var(--bone); border-color: var(--c); outline: none; }
+nav a[href="#linux"] { --c: var(--arch); }
+nav a[href="#claude"] { --c: var(--clay); }
+nav a[href="#agenti"] { --c: var(--red); }
+nav .home { margin-left: auto; border: 0; padding-right: 0; }
+
+header { padding-block: 34px 10px; }
+header h1 { font: 400 clamp(40px, 9vw, 60px)/1 var(--f-serif); letter-spacing: -.02em; margin: 0 0 14px; }
+header h1 em { color: var(--clay); }
+header p { color: var(--bone2); margin: 0 0 12px; max-width: 60ch; }
+
+.how { margin: 22px 0 8px; border-top: 1px solid var(--rule); }
+.how div { display: grid; grid-template-columns: 110px 1fr; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 15px; }
+.how b { font: 600 13px/1.6 var(--f-mono); color: var(--ash); letter-spacing: .04em; }
+kbd, code { font: 500 .86em var(--f-mono); color: var(--bone); }
+kbd { border: 1px solid var(--rule); border-radius: 4px; padding: 0 5px; }
+
+/* o secțiune pe prezentare */
+section { padding-top: 46px; }
+section > h2 {
+  font: 400 clamp(32px, 7vw, 44px)/1.05 var(--f-serif); letter-spacing: -.02em; margin: 0 0 6px;
+}
+section > h2 i { color: var(--c); }
+section > .meta { font: 500 13px var(--f-mono); color: var(--ash); margin: 0 0 18px; }
+#linux { --c: var(--arch); }
+#claude { --c: var(--clay); }
+#agenti { --c: var(--red); }
+
+/* un slide = un bloc: numărul mare în stânga, ce spui în dreapta */
+article {
+  display: grid; grid-template-columns: 44px 1fr; gap: 0 12px;
+  padding: 18px 0; border-top: 1px solid var(--rule);
+}
+article:target { background: var(--ink2); box-shadow: -18px 0 0 var(--ink2), 18px 0 0 var(--ink2); }
+article:target .n { color: var(--c); }
+.n { font: 700 22px/1.2 var(--f-mono); color: var(--ash); font-variant-numeric: tabular-nums; }
+article h3 { font: 600 19px/1.3 var(--f-body); margin: 0 0 6px; color: var(--bone); }
+article p { margin: 0 0 8px; color: var(--bone2); }
+article p:last-child { margin-bottom: 0; }
+.k { color: var(--bone); border-left: 3px solid var(--c); padding-left: 10px; }
+.q { font-size: 15px; color: var(--ash); }
+.q b { color: var(--bone2); font-weight: 600; }
+
+footer { padding-block: 40px 60px; color: var(--ash); font-size: 14px; }
+
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  article { grid-template-columns: 34px 1fr; }
+  .n { font-size: 18px; }
+  .how div { grid-template-columns: 1fr; gap: 2px; }
+}
+</style>
+</head>
+<body>
+<nav aria-label="Prezentări">
+  <div class="wrap">
+    <a href="#linux">Linux</a><a href="#claude">Claude</a><a href="#agenti">Agenți</a>
+    <a class="home" href="../index.html">meniu</a>
+  </div>
+</nav>
+
+<main class="wrap">
+<header>
+  <h1>Ce spui, <em>slide cu slide.</em></h1>
+  <p>Slide-ul arată, tu povestești. Nu citi de pe el: spune ideea cu cuvintele tale și treci mai departe. Pentru fiecare slide ai ce să zici, fraza de ținut minte (bara colorată) și, unde e cazul, ce răspunzi dacă te întreabă cineva.</p>
+  <div class="how">
+    <div><b>SETUP</b><span>Laptopul pe proiector cu prezentarea, telefonul în mână cu pagina asta.</span></div>
+    <div><b>TASTA N</b><span>În prezentare, <kbd>N</kbd> deschide notele fix la slide-ul curent și le mută singură când dai mai departe. Merge dacă ai două ecrane.</span></div>
+    <div><b>ORDINEA</b><span>Linux → Claude → Agenți. Se leagă între ele: în Claude și Agenți apar „vezi prezentarea 1/2”.</span></div>
+    <div><b>TIMP</b><span>15–20 de minute pe prezentare. Dacă întârzii, sari peste slide-urile marcate „se poate sări”.</span></div>
+    <div><b>TASTE</b><span><kbd>←</kbd> <kbd>→</kbd> sau spațiu · <kbd>F</kbd> ecran complet · <kbd>Esc</kbd> înapoi la meniu</span></div>
+  </div>
+</header>
+
+<!-- ————————————————————————— LINUX ————————————————————————— -->
+<section id="linux">
+  <h2>Arch, de jos <i>în sus.</i></h2>
+  <p class="meta">01 · 19 slide-uri · urci de la hardware la ferestre</p>
+
+  <article id="linux-1"><span class="n">1</span><div>
+    <h3>Copertă</h3>
+    <p>„Azi desfacem Linux-ul strat cu strat: de la hardware până la ferestrele pe care le vezi. Eu folosesc Arch cu Hyprland, deci toate exemplele sunt de acolo.”</p>
+    <p>Jos se vede un boot adevărat: kernelul pornește, apoi rulează Hyprland. Lasă animația să se termine înainte să treci mai departe.</p>
+  </div></article>
+
+  <article id="linux-2"><span class="n">2</span><div>
+    <h3>Straturile</h3>
+    <p>Arată stiva de jos în sus: hardware, kernel, systemd, daemoni, grafica, window manager, aplicații. Tu vezi doar stratul de sus, aplicațiile. Restul lucrează fără să-l vezi.</p>
+    <p class="k">Fiecare strat vorbește doar cu vecinii lui. Tot restul prezentării urcă pe scara asta.</p>
+  </div></article>
+
+  <article id="linux-3"><span class="n">3</span><div>
+    <h3>Boot: ce se întâmplă când apeși butonul</h3>
+    <p><b>UEFI</b> e programul de pe placa de bază: verifică piesele și caută bootloader-ul. <b>Bootloader-ul</b> (systemd-boot sau GRUB) alege ce kernel pornește. <b>Kernelul</b> vine cu un <b>initramfs</b>, un mini-sistem cu driverele de start. Apoi pornește <b>systemd</b>, care pornește tot restul, până la login și Hyprland.</p>
+    <p>Jos, <code>systemd-analyze</code> arată cât a durat fiecare etapă. Cifrele sunt un exemplu, nu de pe un PC anume.</p>
+    <p class="q"><b>Dacă întreabă „de ce Windows pornește mai greu?”</b> Pornește mult mai multe servicii la start. Pe Arch pornește doar ce ai instalat tu.</p>
+  </div></article>
+
+  <article id="linux-4"><span class="n">4</span><div>
+    <h3>Kernelul e șeful</h3>
+    <p>Cercurile sunt niveluri de acces. <b>Ring 0</b> e kernelul: are acces la tot hardware-ul. <b>Ring 3</b> e userspace, unde rulează Firefox, Discord și celelalte programe. Programele nu ating direct hardware-ul, îi cer kernelului.</p>
+    <p>Joburile lui, în dreapta: decide cine primește procesor, dă fiecărui program memoria lui separată, vorbește cu hardware-ul prin drivere, ține fișierele și rețeaua.</p>
+    <p class="q"><b>„Deci Linux e doar kernelul?”</b> Tehnic, da: „Linux” e numele kernelului. Restul (systemd, comenzile, desktopul) îl pune distribuția, aici Arch.</p>
+  </div></article>
+
+  <article id="linux-5"><span class="n">5</span><div>
+    <h3>Syscall</h3>
+    <p>Singura ușă dintre programe și kernel. Când <code>echo</code> vrea să scrie „salut” pe ecran, nu poate singur: face un <b>syscall</b> numit <code>write</code>, iar kernelul scrie în locul lui.</p>
+    <p><code>strace</code> îți arată exact ce îi cere programul kernelului: <code>write(1, "salut\n", 6) = 6</code>. 1 înseamnă ecranul (stdout), 6 e numărul de litere scrise.</p>
+    <p class="k">Orice program, oricât de mare, până la urmă doar cere lucruri de la kernel.</p>
+  </div></article>
+
+  <article id="linux-6"><span class="n">6</span><div>
+    <h3>Totul e fișier</h3>
+    <p>Treci repede prin foldere: <code>/home</code> ești tu, <code>/etc</code> setările, <code>/usr</code> programele, <code>/var/log</code> jurnalele. Cele portocalii sunt ciudate: <code>/dev</code>, <code>/proc</code> și <code>/sys</code> nu sunt pe disc. Le generează kernelul pe loc, când le citești.</p>
+    <p>De asta poți citi procesorul ca text (<code>/proc/cpuinfo</code>) și poți lua numere aleatoare dintr-un „fișier” (<code>/dev/urandom</code>).</p>
+  </div></article>
+
+  <article id="linux-7"><span class="n">7</span><div>
+    <h3>PID 1: systemd</h3>
+    <p>Fiecare program care rulează are un număr, PID. Primul pornit de kernel primește numărul 1: e systemd. El pornește tot restul, iar arborele arată cine pe cine a pornit, până la Hyprland, apoi kitty și Firefox.</p>
+    <p class="q"><b>„Ce se întâmplă dacă moare PID 1?”</b> Cade tot sistemul. De asta systemd e scris să nu moară.</p>
+  </div></article>
+
+  <article id="linux-8"><span class="n">8</span><div>
+    <h3>bot.service: o rețetă</h3>
+    <p>Așa îi spui lui systemd să țină un program pornit. Săgețile explică liniile: pornește <b>după</b> ce ai internet, <b>ce</b> comandă rulează, dacă moare îl <b>repornește</b>, și pornește <b>la boot</b>.</p>
+    <p>Comenzile de jos: <code>enable --now</code> îl pornește acum și la fiecare boot, <code>status</code> arată dacă merge, <code>journalctl -f</code> arată logurile live.</p>
+    <p class="k">Asta e rețeta cu care ții un bot pornit 24/7. O folosim din nou în prezentarea 3.</p>
+  </div></article>
+
+  <article id="linux-9"><span class="n">9</span><div>
+    <h3>Daemoni</h3>
+    <p>Un daemon e un program care rulează în fundal, fără fereastră, și așteaptă să aibă ceva de făcut. De obicei numele se termină în „d”: <code>sshd</code> așteaptă conexiuni SSH, <code>bluetoothd</code> se ocupă de Bluetooth.</p>
+    <p>Poveste scurtă: numele vine de la MIT, anii ’60, după „demonul lui Maxwell”, o creatură imaginară din fizică care sortează molecule fără să o vadă nimeni.</p>
+  </div></article>
+
+  <article id="linux-10"><span class="n">10</span><div>
+    <h3>X11 vs Wayland</h3>
+    <p>Cine desenează ecranul. <b>X11</b> e din 1987: între aplicație și ecran e un intermediar, X server-ul, iar imaginea face drum dus-întors. E mai lent, iar orice aplicație poate vedea ce tastezi în alta.</p>
+    <p><b>Wayland</b> e varianta de azi: un singur program, compositorul, face tot. La mine compositorul e Hyprland.</p>
+    <p class="q"><b>„Merg jocurile și Discord pe Wayland?”</b> Da. Aplicațiile vechi rulează prin XWayland, un X mic care merge în interiorul Wayland.</p>
+  </div></article>
+
+  <article id="linux-11"><span class="n">11</span><div>
+    <h3>Floating vs tiling</h3>
+    <p><b>Floating</b> e ce știe toată lumea din Windows și Mac: muți ferestrele cu mouse-ul și se suprapun. <b>Tiling</b>: fiecare fereastră nouă împarte ecranul cu celelalte, nimic nu se suprapune și le controlezi din tastatură.</p>
+    <p>Lasă animația din dreapta să se repete o dată: se vede cum se împart ferestrele pe rând.</p>
+  </div></article>
+
+  <article id="linux-12"><span class="n">12</span><div>
+    <h3>În realitate</h3>
+    <p>Stânga: KDE Plasma, floating, cu tot inclus. Seamănă cu Windows, e bun ca prim Linux. Dreapta: un desktop Hyprland dintr-un concurs de ricing. Cineva l-a construit piesă cu piesă.</p>
+  </div></article>
+
+  <article id="linux-13"><span class="n">13</span><div>
+    <h3>DE sau WM?</h3>
+    <p><b>DE</b> (desktop environment, cele cu chenar punctat) îți dă tot din cutie: bară, setări, file manager. <b>WM</b> (window manager) se ocupă doar de ferestre; restul îl alegi tu.</p>
+    <p>Harta are două axe: X11 sau Wayland, floating sau tiling. Hyprland e în colțul Wayland + tiling.</p>
+    <p class="q"><b>„Cu ce să încep?”</b> KDE, dacă vrei să meargă din prima. Hyprland, dacă vrei să lucrezi numai din tastatură și ai răbdare să-l configurezi.</p>
+  </div></article>
+
+  <article id="linux-14"><span class="n">14</span><div>
+    <h3>Rice</h3>
+    <p>„Rice” înseamnă desktopul tău, montat piesă cu piesă. Arată piesele: bara (waybar), terminalul (kitty), launcher-ul (rofi), wallpaper-ul și notificările. Pentru fiecare piesă alegi ce program vrei.</p>
+    <p class="k">Toate setările stau în <code>~/.config</code>. Oamenii le pun pe GitHub ca „dotfiles” și le copiază unii de la alții.</p>
+  </div></article>
+
+  <article id="linux-15"><span class="n">15</span><div>
+    <h3>Totul e text: hyprland.conf</h3>
+    <p>Tot desktopul e un fișier text. <code>$mod = SUPER</code> înseamnă tasta Windows. Fiecare <code>bind</code> leagă o combinație de o acțiune: SUPER+Enter deschide terminalul, SUPER+D aplicațiile, SUPER+Q închide fereastra, SUPER+2 te duce pe workspace-ul 2.</p>
+    <p>Salvezi fișierul și se aplică instant, fără restart.</p>
+  </div></article>
+
+  <article id="linux-16"><span class="n">16</span><div>
+    <h3>pacman &amp; AUR</h3>
+    <p><b>pacman</b> instalează programe din depozitele oficiale Arch: verificate, semnate, gata compilate. <b>AUR</b> e depozitul comunității: nu are programele în sine, are rețete (PKGBUILD) după care <code>yay</code> sau <code>paru</code> descarcă și compilează programul.</p>
+    <p>Arch e „rolling release”: nu există versiuni mari ca Windows 10 → 11, primești update-uri mereu, cu <code>-Syu</code>.</p>
+    <p class="k">În AUR poate urca oricine orice. Citește rețeta înainte să instalezi.</p>
+  </div></article>
+
+  <article id="linux-17"><span class="n">17</span><div>
+    <h3>Instalarea</h3>
+    <p>Treci repede prin cei 8 pași: pornești de pe stick, te conectezi la internet, faci partițiile, instalezi sistemul de bază, intri în el, pui bootloader-ul, îți faci user, restart. Totul în terminal.</p>
+    <p class="k">Scurtătura e <code>archinstall</code>: un meniu ghidat, gata în vreo 10 minute.</p>
+    <p class="q"><b>„De unde învăț?”</b> Wiki-ul Arch (wiki.archlinux.org), pagina „Installation guide”. E cea mai bună documentație de Linux, chiar dacă folosești altă distribuție.</p>
+  </div></article>
+
+  <article id="linux-18"><span class="n">18</span><div>
+    <h3>Fițuica <span class="q">· se poate sări</span></h3>
+    <p>Nu le citi pe toate. „Astea sunt comenzile pe care le folosesc zilnic: faceți-i poză.” Poți arăta două: <code>btop</code> (ce mănâncă procesorul) și <code>man</code> (manualul oricărei comenzi).</p>
+  </div></article>
+
+  <article id="linux-19"><span class="n">19</span><div>
+    <h3>i use arch btw</h3>
+    <p>Ecranul arată ca fastfetch, rezumatul pe care îl postează toată lumea cu desktopul ei. Glumă de final: „i use arch btw” e meme-ul oficial al comunității.</p>
+    <p>Treci la întrebări, sau spune: „Asta a fost mașina. Acum: AI-ul care rulează pe ea.”</p>
+  </div></article>
+</section>
+
+<!-- ————————————————————————— CLAUDE ————————————————————————— -->
+<section id="claude">
+  <h2>Claude, <i>pe bune.</i></h2>
+  <p class="meta">02 · 19 slide-uri · ce e, cât costă, cum îl pui la treabă</p>
+
+  <article id="claude-1"><span class="n">1</span><div>
+    <h3>Copertă</h3>
+    <p>„Claude e AI-ul făcut de Anthropic. Azi: ce e de fapt, cât costă și cum îl pui să lucreze pentru tine, nu doar să-ți răspundă.”</p>
+    <p>Cuvintele care se schimbă jos („Pondering…”, „Noodling…”) sunt chiar mesajele pe care le afișează Claude Code când gândește.</p>
+  </div></article>
+
+  <article id="claude-2"><span class="n">2</span><div>
+    <h3>Ghicește următorul cuvânt</h3>
+    <p>Tot trucul: un model de limbaj a citit enorm de mult text și a învățat să ghicească ce urmează. După <code>sudo pacman</code>, cel mai probabil vine <code>-Syu</code>. Alege un cuvânt, apoi următorul, și tot așa.</p>
+    <p>Procentele de pe slide sunt ilustrative, nu măsurate.</p>
+    <p class="q"><b>„Deci doar ghicește?”</b> Da, dar ca să ghicești bine continuarea unui cod sau a unui raționament, trebuie să-l fi „prins”. De acolo vine puterea lui.</p>
+  </div></article>
+
+  <article id="claude-3"><span class="n">3</span><div>
+    <h3>Tokeni</h3>
+    <p>Modelul nu vede cuvinte, vede bucăți de cuvinte: tokeni. „frizerie” devine „fri-zer-ie”. Totul se măsoară în tokeni: cât citește, cât scrie, cât plătești.</p>
+    <p><b>Fereastra de context</b> e cât poate ține minte odată: 200 de mii de tokeni la Haiku, un milion la modelele mari, adică vreo 2.500 de pagini.</p>
+    <p class="q"><b>„Româna costă mai mult?”</b> De obicei da, puțin: pentru același text româna se sparge în mai mulți tokeni decât engleza.</p>
+  </div></article>
+
+  <article id="claude-4"><span class="n">4</span><div>
+    <h3>Familia de modele</h3>
+    <p>Patru modele, de la mic la mare. <b>Haiku</b>: rapid și ieftin, pentru volum mare. <b>Sonnet</b>: la tot ce faci zi de zi. <b>Opus</b>: cod greu și agenți. <b>Fable</b>: cel mai capabil și cel mai scump.</p>
+    <p>Prețul e per milion de tokeni, în dolari: primul număr e ce trimiți (intrare), al doilea e ce scrie modelul (ieșire). Ieșirea costă de 5 ori mai mult.</p>
+    <p class="k">Regula simplă: începi cu Sonnet și treci pe altul doar dacă ai un motiv.</p>
+  </div></article>
+
+  <article id="claude-5"><span class="n">5</span><div>
+    <h3>Trei uși</h3>
+    <p>Trei feluri de a folosi Claude. <b>claude.ai</b>: chat-ul, pe web, telefon sau desktop, pentru tine. <b>Claude Code</b>: agent în terminal, care scrie și rulează cod în proiectele tale. <b>API</b>: Claude băgat în aplicațiile tale, pentru clienți.</p>
+  </div></article>
+
+  <article id="claude-6"><span class="n">6</span><div>
+    <h3>Abonament sau contor</h3>
+    <p><b>Pro / Max</b>: plătești fix pe lună și ai claude.ai + Claude Code. Dacă folosești mult, dai de o limită de mesaje, nu de o factură mare.</p>
+    <p><b>API</b>: plătești exact cât consumi, ca la taximetru; contorul de pe slide chiar urcă. Aici ajung aplicațiile tale și boții clienților.</p>
+    <p class="k">Pentru tine: abonament. Pentru ce vinzi altora: API.</p>
+  </div></article>
+
+  <article id="claude-7"><span class="n">7</span><div>
+    <h3>Claude Code</h3>
+    <p>„Un coleg care stă în terminal.” Se instalează cu o comandă, intri în folderul proiectului și scrii <code>claude</code>. De acolo îi spui ce vrei, în română, și lucrează direct pe fișierele tale.</p>
+  </div></article>
+
+  <article id="claude-8"><span class="n">8</span><div>
+    <h3>Bucla</h3>
+    <p>Diferența dintre chat și agent. Chat-ul îți spune ce să faci și tu faci. Agentul face singur: citește, face un plan, scrie, rulează, verifică. Dacă nu merge, o ia de la capăt, până merge.</p>
+    <p class="k">Chat-ul răspunde. Agentul termină treaba.</p>
+  </div></article>
+
+  <article id="claude-9"><span class="n">9</span><div>
+    <h3>Demo</h3>
+    <p>O sesiune reconstruită, ca exemplu: cer un site pentru frizeria lui Vlad. Arată liniile pe măsură ce apar: <b>Read</b> înseamnă că citește proiectul, <b>Write</b> că scrie fișiere, <b>Bash</b> că rulează o comandă, aici pornește site-ul local.</p>
+    <p>Jos scrie „accept edits on”: modul în care îl lași să modifice fișiere fără să te întrebe la fiecare pas.</p>
+  </div></article>
+
+  <article id="claude-10"><span class="n">10</span><div>
+    <h3>Are mâini</h3>
+    <p>„Uneltele” sunt ce poate face singur: citește și editează fișiere, rulează comenzi, caută în proiect și pe net, trimite subagenți.</p>
+    <p>În dreapta sunt modurile, adică cât îl lași singur: să întrebe la tot, să editeze fără întrebări, doar să planifice, sau „auto”, unde decide singur ce e sigur. <kbd>shift+tab</kbd> schimbă modul, <kbd>esc</kbd> îl oprește.</p>
+  </div></article>
+
+  <article id="claude-11"><span class="n">11</span><div>
+    <h3>Îl înveți</h3>
+    <p>Șase feluri de a-l personaliza. <b>CLAUDE.md</b>: regulile proiectului, pe care le citește mereu. <b>Skills</b>: rețete pe care le încarcă singur când e nevoie. Exemplul de pe slide e skill-ul meu anti-„AI slop”, cu care a fost făcut și meniul ăsta.</p>
+    <p>Restul, pe scurt: comenzi scurte (<code>/review</code>), hooks (reflexe automate, de exemplu formatează după fiecare editare), MCP (conectori, pe slide-ul următor) și subagenți (clone care lucrează în paralel).</p>
+  </div></article>
+
+  <article id="claude-12"><span class="n">12</span><div>
+    <h3>MCP = USB-C</h3>
+    <p>MCP e o mufă standard. Orice aplicație care are un „server MCP” se poate conecta la Claude: GitHub, Gmail, Notion, baze de date. Claude cere ceva, serverul MCP face treaba în aplicație și îi trimite răspunsul înapoi.</p>
+    <p class="k">E un standard deschis: aceeași mufă merge și în Hermes, OpenClaw sau Cursor.</p>
+  </div></article>
+
+  <article id="claude-13"><span class="n">13</span><div>
+    <h3>API key</h3>
+    <p>„O parolă care plătește.” Cheia API arată așa, <code>sk-ant-…</code>. Cine o are poate folosi Claude pe banii tăi. De aici începe partea tehnică pentru cine vrea să construiască ceva.</p>
+  </div></article>
+
+  <article id="claude-14"><span class="n">14</span><div>
+    <h3>Drumul unei cereri</h3>
+    <p>Aplicația ta (un bot, un site) ține cheia într-un fișier <code>.env</code> și trimite o cerere la serverele Anthropic, cu cheia atașată. Claude răspunde și spune câți tokeni a folosit, iar suma ți se adaugă pe factură.</p>
+    <p>Cifrele (12 tokeni intrare, 48 ieșire, o fracțiune de cent) sunt un exemplu, ca să vadă cât de mic e costul unei singure cereri.</p>
+  </div></article>
+
+  <article id="claude-15"><span class="n">15</span><div>
+    <h3>În cod: 9 rânduri <span class="q">· se poate sări</span></h3>
+    <p>Aceeași cerere scrisă în două feluri: în Python, cu biblioteca oficială, și direct din terminal, cu <code>curl</code>. Nu citi codul: arată doar cât de scurt e.</p>
+    <p>Cheia o iei din console.anthropic.com → API Keys și o pui ca variabilă de mediu, nu direct în cod.</p>
+  </div></article>
+
+  <article id="claude-16"><span class="n">16</span><div>
+    <h3>Cheia nu pleacă de acasă</h3>
+    <p>Patru reguli: niciodată în Git, niciodată în codul din browser (acolo o vede oricine), pui o limită de bani pe lună, faci câte o cheie pentru fiecare proiect.</p>
+    <p>Exemplul din dreapta: cineva a pus cheia direct în cod și a urcat-o pe GitHub. Boții scanează GitHub non-stop după chei și o găsesc în câteva minute.</p>
+    <p class="q"><b>„Și dacă a scăpat?”</b> O ștergi imediat din Console și faci alta. Cheia veche nu mai merge din acel moment.</p>
+  </div></article>
+
+  <article id="claude-17"><span class="n">17</span><div>
+    <h3>Scurtături <span class="q">· se poate sări</span></h3>
+    <p>Alege trei: <code>/init</code> îi scrie singur CLAUDE.md, <code>/clear</code> începe o conversație nouă, <kbd>esc esc</kbd> te întoarce la un pas anterior. Pe restul lasă-i să le fotografieze.</p>
+  </div></article>
+
+  <article id="claude-18"><span class="n">18</span><div>
+    <h3>Ce vinzi cu el</h3>
+    <p>Partea cu banii. <b>Site-uri, rapid</b>: Claude Code construiește, tu alegi designul și verifici. <b>Chatbot pentru firme</b>: răspunde clienților pe site sau pe WhatsApp, prin API. <b>Automatizări</b>: rapoarte, follow-up, facturi, făcute de agenți care nu dorm.</p>
+    <p class="k">Ultima e exact subiectul prezentării 3.</p>
+  </div></article>
+
+  <article id="claude-19"><span class="n">19</span><div>
+    <h3>Deschide terminalul</h3>
+    <p>Final: primul pas e să scrii <code>claude</code> în terminal, într-un proiect, și să-l rogi să-ți explice proiectul. Treci la întrebări sau la prezentarea 3.</p>
+  </div></article>
+</section>
+
+<!-- ————————————————————————— AGENȚI ————————————————————————— -->
+<section id="agenti">
+  <h2>Servere <i>&amp;</i> agenți.</h2>
+  <p class="meta">03 · 19 slide-uri · unde rulează AI-ul și ce face singur</p>
+
+  <article id="agenti-1"><span class="n">1</span><div>
+    <h3>Copertă</h3>
+    <p>„Calculatoare care nu dorm și AI-ul care lucrează pe ele.” Anunță cei doi agenți despre care vorbim: OpenClaw și Hermes.</p>
+    <p>Sus scrie U01, ca unitățile dintr-un rack de servere. Fiecare slide e o unitate.</p>
+  </div></article>
+
+  <article id="agenti-2"><span class="n">2</span><div>
+    <h3>Un server</h3>
+    <p>Un server e un calculator normal, doar că e pornit non-stop, n-are ecran și nici tastatură. Stă și ascultă pe porturi, iar tu îl controlezi de la distanță, prin SSH.</p>
+    <p>Rack-ul din stânga e un dulap cu mai multe servere, fiecare cu treaba lui: web, bază de date, mail. Cel roșu e al agentului.</p>
+  </div></article>
+
+  <article id="agenti-3"><span class="n">3</span><div>
+    <h3>Scrii o adresă. Ce se întâmplă?</h3>
+    <p>Urmărește bulina: browserul întreabă <b>DNS-ul</b> ce IP are frizeria.ro, cererea trece prin internet și ajunge la server. Acolo <b>nginx</b> o primește la ușă, <b>aplicația</b> face treaba, iar <b>baza de date</b> ține datele.</p>
+    <p class="k">Tot drumul, dus-întors, durează sub o zecime de secundă.</p>
+  </div></article>
+
+  <article id="agenti-4"><span class="n">4</span><div>
+    <h3>Porturile sunt uși</h3>
+    <p>Un server are un IP și 65.535 de uși numerotate. Pe 22 intri tu, prin SSH. Pe 80 și 443 intră vizitatorii site-ului, 443 fiind varianta criptată. Baza de date și gateway-ul agentului rămân închise spre internet.</p>
+    <p class="k">Firewall-ul lasă deschis doar ce trebuie. Orice ușă în plus e o ușă în plus pentru atacatori.</p>
+  </div></article>
+
+  <article id="agenti-5"><span class="n">5</span><div>
+    <h3>VPS</h3>
+    <p>Nu-ți cumperi server: închiriezi o felie dintr-unul mare. Primești câteva nuclee, niște RAM și un IP public al tău, iar din terminal intri cu <code>ssh root@IP</code>.</p>
+    <p>Prețurile orientative sunt pe slide: câțiva euro pe lună la Hetzner sau DigitalOcean, gratuit la Oracle. Sau un laptop vechi lăsat pornit acasă.</p>
+    <p class="q"><b>„Care e cel mai bun?”</b> Pentru început, cel mai ieftin care e aproape de tine (Europa). Pentru un agent ajung 2 nuclee și 4 GB RAM.</p>
+  </div></article>
+
+  <article id="agenti-6"><span class="n">6</span><div>
+    <h3>Botul trăiește dacă închizi laptopul?</h3>
+    <p>Trei feluri de a-l ține pornit. <b>tmux</b>: o sesiune care rămâne deschisă după ce pleci; bună pentru teste. <b>systemd</b>: rețeta din prezentarea 1, pornește la boot și repornește dacă pică. <b>Docker</b>: tot botul într-o cutie, ușor de mutat pe alt server.</p>
+    <p class="k">Pentru ceva serios: systemd sau Docker, nu tmux.</p>
+  </div></article>
+
+  <article id="agenti-7"><span class="n">7</span><div>
+    <h3>Chatbot vs agent</h3>
+    <p>Chatbot-ul îți răspunde „rulează sudo reboot”, iar munca o faci tu. Agentul primește un scop și se învârte în buclă: vede, gândește, acționează, verifică. Are și unelte: terminal, browser, email, fișiere, WhatsApp.</p>
+    <p class="k">E aceeași buclă ca la Claude Code, doar că merge 24/7 pe un server.</p>
+  </div></article>
+
+  <article id="agenti-8"><span class="n">8</span><div>
+    <h3>Anatomia unui agent</h3>
+    <p>Șase piese. <b>Creierul</b> e modelul (Claude sau altul). <b>Mâinile</b> sunt uneltele. <b>Memoria</b> sunt fișiere și baze de date. <b>Canalele</b> sunt locurile unde îi scrii. <b>Ceasul</b> îl trezește singur. <b>Rețetele</b> sunt skills, la fel ca în Claude Code.</p>
+  </div></article>
+
+  <article id="agenti-9"><span class="n">9</span><div>
+    <h3>OpenClaw</h3>
+    <p>Un asistent personal care rulează pe calculatorul sau serverul tău. Îi scrii pe aplicațiile pe care le folosești deja: WhatsApp, Telegram, Discord și altele. Modelul din spate se schimbă ușor, ca o baterie. E open-source și n-are abonament.</p>
+    <p>Captura din dreapta e o conversație reală pe WhatsApp, din documentația lor.</p>
+  </div></article>
+
+  <article id="agenti-10"><span class="n">10</span><div>
+    <h3>Gateway-ul</h3>
+    <p>Inima lui OpenClaw: un singur program care leagă tot. Mesajul vine de pe WhatsApp, gateway-ul verifică cine scrie, alege sesiunea, adaugă memoria și regulile, apoi îl trimite la model. Modelul folosește uneltele, iar răspunsul se întoarce tot pe WhatsApp.</p>
+    <p class="k">Atenție: implicit, uneltele rulează direct pe server, nu într-o cutie izolată. Revenim la asta la securitate.</p>
+  </div></article>
+
+  <article id="agenti-11"><span class="n">11</span><div>
+    <h3>Heartbeat</h3>
+    <p>La fiecare 30 de minute agentul se trezește singur și citește o listă, HEARTBEAT.md: ce să verifice. Dacă totul e în regulă, notează „OK” și nu te deranjează. Dacă găsește ceva, îți scrie, ca la ora 10:00: „site-ul e căzut, îl repornesc?”</p>
+    <p class="k">Asta îl face proactiv: lucrează și când nu-i scrii tu.</p>
+  </div></article>
+
+  <article id="agenti-12"><span class="n">12</span><div>
+    <h3>Hermes</h3>
+    <p>Al doilea agent, făcut de Nous Research, open-source. Ideea lui: învață din ce face. Primește o sarcină, o rezolvă, își salvează rețeta ca skill, iar data viitoare o face mai bine. Ține minte și ce a învățat despre tine.</p>
+  </div></article>
+
+  <article id="agenti-13"><span class="n">13</span><div>
+    <h3>Ce știe Hermes</h3>
+    <p>Patru lucruri: îi scrii de oriunde, printr-un singur gateway; îi dai sarcini recurente în cuvinte („în fiecare dimineață la 8…”); se clonează în subagenți; rulează oriunde, inclusiv pe un VPS de 5 dolari.</p>
+  </div></article>
+
+  <article id="agenti-14"><span class="n">14</span><div>
+    <h3>Instalarea</h3>
+    <p>La amândoi sunt trei comenzi: instalezi, rulezi setup-ul, pornești gateway-ul. Wizard-ul îți cere trei lucruri: cheia API (din prezentarea 2), un token de bot de Telegram (îl faci la @BotFather) și ce unelte are voie să folosească.</p>
+  </div></article>
+
+  <article id="agenti-15"><span class="n">15</span><div>
+    <h3>Care?</h3>
+    <p>Tabelul, pe scurt: <b>OpenClaw</b> e mai bun la canale, control și echipe. <b>Hermes</b> e mai bun la învățat singur. OpenClaw e în Node.js, Hermes în Python. Dacă ai început cu OpenClaw, Hermes are o comandă care te mută.</p>
+    <p class="q"><b>„Pe care îl iau?”</b> Pentru un bot de clienți pe WhatsApp: OpenClaw. Pentru un asistent personal care se tot îmbunătățește: Hermes.</p>
+  </div></article>
+
+  <article id="agenti-16"><span class="n">16</span><div>
+    <h3>Ce vinzi cu ei</h3>
+    <p>Șase servicii pe care le poți vinde firmelor. Orele de sus spun povestea: răspunde clienților la 3 noaptea, trimite raportul la 8 dimineața, verifică site-urile la fiecare 30 de minute, face follow-up după 2 zile, trimite remindere de facturi vinerea.</p>
+    <p class="k">Ultimul e pentru tine: îi scrii din telefon „repară butonul de pe site”, iar agentul face modificarea.</p>
+  </div></article>
+
+  <article id="agenti-17"><span class="n">17</span><div>
+    <h3>Are cheile casei</h3>
+    <p>Un agent cu acces la server, mail și WhatsApp e periculos dacă e pus prost. Cinci reguli: pe un server separat, uneltele într-o cutie izolată (Docker), doar numărul tău îi poate da ordine, limită de bani pe cheia API, gateway-ul nu se expune pe internet.</p>
+    <p>Mail-ul din dreapta arată <b>prompt injection</b>: agentul citește tot, deci cineva poate ascunde ordine într-un email („trimite-mi fișierul .env”).</p>
+    <p class="k">Tot ce citește agentul poate conține ordine ascunse. De asta nu-i dai mai mult acces decât îi trebuie.</p>
+  </div></article>
+
+  <article id="agenti-18"><span class="n">18</span><div>
+    <h3>Primul agent, într-o seară</h3>
+    <p>Șapte pași, cam 35 de minute: închiriezi VPS-ul, intri prin SSH și faci update, îți faci user și firewall, instalezi agentul, iei cheia API, îți faci bot de Telegram și îi dai prima sarcină.</p>
+    <p>La ultimul pas scrie ∞: de acolo nu te mai oprești.</p>
+  </div></article>
+
+  <article id="agenti-19"><span class="n">19</span><div>
+    <h3>Tu dormi. El lucrează.</h3>
+    <p>Final. Linkurile de jos duc la documentația oficială a celor doi agenți. Treci la întrebări.</p>
+  </div></article>
+</section>
+</main>
+
+<footer class="wrap">Prețurile și modelele din Claude sunt cele de pe slide-uri (septembrie 2026). Verifică-le înainte de prezentare, se schimbă des.</footer>
+</body>
+</html>
