@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Note de prezentator</title>
-<meta name="description" content="Ce spui la fiecare slide din cele trei prezentări: Linux, Claude, servere și agenți.">
+<meta name="description" content="Ce spui la fiecare slide din cele două prezentări: Claude, apoi servere și agenți.">
 <link rel="stylesheet" href="../assets/fonts/newsreader.css">
 <link rel="stylesheet" href="../assets/fonts/hanken.css">
 <link rel="stylesheet" href="../assets/fonts/jetbrains.css">
@@ -14,7 +14,7 @@
 :root {
   --ink: #0e0d0b; --ink2: #171613; --rule: #2c2a25;
   --bone: #ece6d8; --bone2: #c9c2b2; --ash: #8a8374;
-  --arch: #1793d1; --clay: #d97757; --red: #ff4d4d;
+  --clay: #d97757; --red: #ff4d4d;
   --f-serif: 'Newsreader', Georgia, serif;
   --f-body: 'Hanken Grotesk', system-ui, sans-serif;
   --f-mono: 'JetBrains Mono', ui-monospace, monospace;
@@ -39,7 +39,6 @@ nav a {
   padding: 9px 12px; border-radius: 6px; border: 1px solid var(--rule);
 }
 nav a:hover, nav a:focus-visible { color: var(--bone); border-color: var(--c); outline: none; }
-nav a[href="#linux"] { --c: var(--arch); }
 nav a[href="#claude"] { --c: var(--clay); }
 nav a[href="#agenti"] { --c: var(--red); }
 nav .home { margin-left: auto; border: 0; padding-right: 0; }
@@ -62,7 +61,6 @@ section > h2 {
 }
 section > h2 i { color: var(--c); }
 section > .meta { font: 500 13px var(--f-mono); color: var(--ash); margin: 0 0 18px; }
-#linux { --c: var(--arch); }
 #claude { --c: var(--clay); }
 #agenti { --c: var(--red); }
 
@@ -94,7 +92,7 @@ footer { padding-block: 40px 60px; color: var(--ash); font-size: 14px; }
 <body>
 <nav aria-label="Prezentări">
   <div class="wrap">
-    <a href="#linux">Linux</a><a href="#claude">Claude</a><a href="#agenti">Agenți</a>
+    <a href="#claude">Claude</a><a href="#agenti">Agenți</a>
     <a class="home" href="../index.html">meniu</a>
   </div>
 </nav>
@@ -106,145 +104,11 @@ footer { padding-block: 40px 60px; color: var(--ash); font-size: 14px; }
   <div class="how">
     <div><b>SETUP</b><span>Laptopul pe proiector cu prezentarea, telefonul în mână cu pagina asta.</span></div>
     <div><b>TASTA N</b><span>În prezentare, <kbd>N</kbd> deschide notele fix la slide-ul curent și le mută singură când dai mai departe. Merge dacă ai două ecrane.</span></div>
-    <div><b>ORDINEA</b><span>Linux → Claude → Agenți. Se leagă între ele: în Claude și Agenți apar „vezi prezentarea 1/2”.</span></div>
+    <div><b>ORDINEA</b><span>Claude → Agenți. Se leagă între ele: în Agenți apare „vezi prezentarea 1”.</span></div>
     <div><b>TIMP</b><span>15–20 de minute pe prezentare. Dacă întârzii, sari peste slide-urile marcate „se poate sări”.</span></div>
     <div><b>TASTE</b><span><kbd>←</kbd> <kbd>→</kbd> sau spațiu · <kbd>F</kbd> ecran complet · <kbd>Esc</kbd> înapoi la meniu</span></div>
   </div>
 </header>
-
-<!-- ————————————————————————— LINUX ————————————————————————— -->
-<section id="linux">
-  <h2>Linux, de jos <i>în sus.</i></h2>
-  <p class="meta">01 · 20 slide-uri · urci de la hardware la ferestre</p>
-
-  <article id="linux-1"><span class="n">1</span><div>
-    <h3>Copertă</h3>
-    <p>„Azi desfacem Linux-ul strat cu strat: de la hardware până la ferestrele pe care le vezi. Aproape tot ce arăt e la fel pe orice distribuție. Eu folosesc Arch, prin EndeavourOS, cu Hyprland, deci exemplele sunt de acolo.”</p>
-    <p>Jos se vede un boot adevărat: kernelul pornește, apoi rulează Hyprland. Lasă animația să se termine înainte să treci mai departe.</p>
-  </div></article>
-
-  <article id="linux-2"><span class="n">2</span><div>
-    <h3>Straturile</h3>
-    <p>Arată stiva de jos în sus: hardware, kernel, systemd, daemoni, grafica, window manager, aplicații. Tu vezi doar stratul de sus, aplicațiile. Restul lucrează fără să-l vezi.</p>
-    <p class="k">Fiecare strat vorbește doar cu vecinii lui. Tot restul prezentării urcă pe scara asta.</p>
-  </div></article>
-
-  <article id="linux-3"><span class="n">3</span><div>
-    <h3>Boot: ce se întâmplă când apeși butonul</h3>
-    <p><b>UEFI</b> e programul de pe placa de bază: verifică piesele și caută bootloader-ul. <b>Bootloader-ul</b> (systemd-boot sau GRUB) alege ce kernel pornește. <b>Kernelul</b> vine cu un <b>initramfs</b>, un mini-sistem cu driverele de start. Apoi pornește <b>systemd</b>, care pornește tot restul, până la login și Hyprland.</p>
-    <p>Jos, <code>systemd-analyze</code> arată cât a durat fiecare etapă. Cifrele sunt un exemplu, nu de pe un PC anume.</p>
-    <p class="q"><b>Dacă întreabă „de ce Windows pornește mai greu?”</b> Pornește mult mai multe servicii la start. Pe Arch pornește doar ce ai instalat tu.</p>
-  </div></article>
-
-  <article id="linux-4"><span class="n">4</span><div>
-    <h3>Kernelul e șeful</h3>
-    <p>Cercurile sunt niveluri de acces. <b>Ring 0</b> e kernelul: are acces la tot hardware-ul. <b>Ring 3</b> e userspace, unde rulează Firefox, Discord și celelalte programe. Programele nu ating direct hardware-ul, îi cer kernelului.</p>
-    <p>Joburile lui, în dreapta: decide cine primește procesor, dă fiecărui program memoria lui separată, vorbește cu hardware-ul prin drivere, ține fișierele și rețeaua.</p>
-    <p class="q"><b>„Deci Linux e doar kernelul?”</b> Tehnic, da: „Linux” e numele kernelului. Restul (systemd, comenzile, desktopul) îl pune distribuția, aici Arch.</p>
-  </div></article>
-
-  <article id="linux-5"><span class="n">5</span><div>
-    <h3>Syscall</h3>
-    <p>Singura ușă dintre programe și kernel. Când <code>echo</code> vrea să scrie „salut” pe ecran, nu poate singur: face un <b>syscall</b> numit <code>write</code>, iar kernelul scrie în locul lui.</p>
-    <p><code>strace</code> îți arată exact ce îi cere programul kernelului: <code>write(1, "salut\n", 6) = 6</code>. 1 înseamnă ecranul (stdout), 6 e numărul de litere scrise.</p>
-    <p class="k">Orice program, oricât de mare, până la urmă doar cere lucruri de la kernel.</p>
-  </div></article>
-
-  <article id="linux-6"><span class="n">6</span><div>
-    <h3>Totul e fișier</h3>
-    <p>Treci repede prin foldere: <code>/home</code> ești tu, <code>/etc</code> setările, <code>/usr</code> programele, <code>/var/log</code> jurnalele. Cele portocalii sunt ciudate: <code>/dev</code>, <code>/proc</code> și <code>/sys</code> nu sunt pe disc. Le generează kernelul pe loc, când le citești.</p>
-    <p>De asta poți citi procesorul ca text (<code>/proc/cpuinfo</code>) și poți lua numere aleatoare dintr-un „fișier” (<code>/dev/urandom</code>).</p>
-  </div></article>
-
-  <article id="linux-7"><span class="n">7</span><div>
-    <h3>PID 1: systemd</h3>
-    <p>Fiecare program care rulează are un număr, PID. Primul pornit de kernel primește numărul 1: e systemd. El pornește tot restul, iar arborele arată cine pe cine a pornit, până la Hyprland, apoi kitty și Firefox.</p>
-    <p class="q"><b>„Ce se întâmplă dacă moare PID 1?”</b> Cade tot sistemul. De asta systemd e scris să nu moară.</p>
-  </div></article>
-
-  <article id="linux-8"><span class="n">8</span><div>
-    <h3>bot.service: o rețetă</h3>
-    <p>Așa îi spui lui systemd să țină un program pornit. Săgețile explică liniile: pornește <b>după</b> ce ai internet, <b>ce</b> comandă rulează, dacă moare îl <b>repornește</b>, și pornește <b>la boot</b>.</p>
-    <p>Comenzile de jos: <code>enable --now</code> îl pornește acum și la fiecare boot, <code>status</code> arată dacă merge, <code>journalctl -f</code> arată logurile live.</p>
-    <p class="k">Asta e rețeta cu care ții un bot pornit 24/7. O folosim din nou în prezentarea 3.</p>
-  </div></article>
-
-  <article id="linux-9"><span class="n">9</span><div>
-    <h3>Daemoni</h3>
-    <p>Un daemon e un program care rulează în fundal, fără fereastră, și așteaptă să aibă ceva de făcut. De obicei numele se termină în „d”: <code>sshd</code> așteaptă conexiuni SSH, <code>bluetoothd</code> se ocupă de Bluetooth.</p>
-    <p>Poveste scurtă: numele vine de la MIT, anii ’60, după „demonul lui Maxwell”, o creatură imaginară din fizică care sortează molecule fără să o vadă nimeni.</p>
-  </div></article>
-
-  <article id="linux-10"><span class="n">10</span><div>
-    <h3>X11 vs Wayland</h3>
-    <p>Cine desenează ecranul. <b>X11</b> e din 1987: între aplicație și ecran e un intermediar, X server-ul, iar imaginea face drum dus-întors. E mai lent, iar orice aplicație poate vedea ce tastezi în alta.</p>
-    <p><b>Wayland</b> e varianta de azi: un singur program, compositorul, face tot. La mine compositorul e Hyprland.</p>
-    <p class="q"><b>„Merg jocurile și Discord pe Wayland?”</b> Da. Aplicațiile vechi rulează prin XWayland, un X mic care merge în interiorul Wayland.</p>
-  </div></article>
-
-  <article id="linux-11"><span class="n">11</span><div>
-    <h3>Floating vs tiling</h3>
-    <p><b>Floating</b> e ce știe toată lumea din Windows și Mac: muți ferestrele cu mouse-ul și se suprapun. <b>Tiling</b>: fiecare fereastră nouă împarte ecranul cu celelalte, nimic nu se suprapune și le controlezi din tastatură.</p>
-    <p>Lasă animația din dreapta să se repete o dată: se vede cum se împart ferestrele pe rând.</p>
-  </div></article>
-
-  <article id="linux-12"><span class="n">12</span><div>
-    <h3>În realitate</h3>
-    <p>Stânga: KDE Plasma, floating, cu tot inclus. Seamănă cu Windows, e bun ca prim Linux. Dreapta: laptopul meu, cu Hyprland. Trei programe deschise (fastfetch, btop și chiar prezentarea asta) s-au așezat singure unul lângă altul, fără să le mut eu.</p>
-  </div></article>
-
-  <article id="linux-13"><span class="n">13</span><div>
-    <h3>DE sau WM?</h3>
-    <p><b>DE</b> (desktop environment, cele cu chenar punctat) îți dă tot din cutie: bară, setări, file manager. <b>WM</b> (window manager) se ocupă doar de ferestre; restul îl alegi tu.</p>
-    <p>Harta are două axe: X11 sau Wayland, floating sau tiling. Hyprland e în colțul Wayland + tiling.</p>
-    <p class="q"><b>„Cu ce să încep?”</b> KDE, dacă vrei să meargă din prima. Hyprland, dacă vrei să lucrezi numai din tastatură și ai răbdare să-l configurezi.</p>
-  </div></article>
-
-  <article id="linux-14"><span class="n">14</span><div>
-    <h3>Rice</h3>
-    <p>„Rice” înseamnă desktopul tău, montat piesă cu piesă. Arată piesele: bara (waybar), terminalul (kitty), launcher-ul (rofi), wallpaper-ul și notificările. Pentru fiecare piesă alegi ce program vrei.</p>
-    <p class="k">Toate setările stau în <code>~/.config</code>. Oamenii le pun pe GitHub ca „dotfiles” și le copiază unii de la alții.</p>
-  </div></article>
-
-  <article id="linux-15"><span class="n">15</span><div>
-    <h3>Totul e text: hyprland.conf</h3>
-    <p>Tot desktopul e un fișier text. <code>$mod = SUPER</code> înseamnă tasta Windows. Fiecare <code>bind</code> leagă o combinație de o acțiune: SUPER+Enter deschide terminalul, SUPER+D aplicațiile, SUPER+Q închide fereastra, SUPER+2 te duce pe workspace-ul 2.</p>
-    <p>Salvezi fișierul și se aplică instant, fără restart.</p>
-  </div></article>
-
-  <article id="linux-16"><span class="n">16</span><div>
-    <h3>Distribuții</h3>
-    <p>Kernelul e același peste tot. O <b>distribuție</b> e pachetul din jurul lui: cum instalezi programe, cât de des vin update-urile, ce desktop primești din start. Trei familii mari:</p>
-    <p><b>Debian</b> (Ubuntu, Mint): <code>apt</code>, versiuni fixe; Ubuntu scoate o versiune LTS la doi ani. <b>Fedora</b>: <code>dnf</code>, versiune nouă cam la șase luni. <b>Arch</b>: <code>pacman</code>, rolling release, adică primești update-uri mereu, fără versiuni mari.</p>
-    <p class="k">Recomandarea mea: EndeavourOS. E Arch, cu tot ce ai văzut aici, dar se instalează dintr-un installer grafic, nu din terminal.</p>
-    <p class="q"><b>„Care e cea mai ușoară?”</b> Mint sau Ubuntu, dacă vrei să nu te atingi de terminal. EndeavourOS, dacă vrei să înveți cum merge sistemul și să fie mereu la zi.</p>
-  </div></article>
-
-  <article id="linux-17"><span class="n">17</span><div>
-    <h3>pacman &amp; AUR</h3>
-    <p><b>pacman</b> e managerul de pachete al lui Arch (pe Ubuntu faci același lucru cu <code>apt</code>). Instalează programe din depozitele oficiale: verificate, semnate, gata compilate. <b>AUR</b> e depozitul comunității: nu are programele în sine, are rețete (PKGBUILD) după care <code>yay</code> sau <code>paru</code> descarcă și compilează programul.</p>
-    <p>Arch e „rolling release”: nu există versiuni mari ca Windows 10 → 11, primești update-uri mereu, cu <code>-Syu</code>.</p>
-    <p class="k">În AUR poate urca oricine orice. Citește rețeta înainte să instalezi.</p>
-  </div></article>
-
-  <article id="linux-18"><span class="n">18</span><div>
-    <h3>Instalarea</h3>
-    <p>Așa se instalează Arch de mână. Treci repede prin cei 8 pași: pornești de pe stick, te conectezi la internet, faci partițiile, instalezi sistemul de bază, intri în el, pui bootloader-ul, îți faci user, restart. Totul în terminal.</p>
-    <p class="k">Dacă vrei să-l încerci, nu începe așa: ia <b>EndeavourOS</b>. Pui stick-ul, dai click prin installer și în vreo 15 minute ai tot Arch, cu desktopul ales. (Mai există <code>archinstall</code>, un meniu ghidat în terminal.)</p>
-    <p class="q"><b>„De unde învăț?”</b> Wiki-ul Arch (wiki.archlinux.org), pagina „Installation guide”. E cea mai bună documentație de Linux, chiar dacă folosești altă distribuție.</p>
-  </div></article>
-
-  <article id="linux-19"><span class="n">19</span><div>
-    <h3>Fițuica <span class="q">· se poate sări</span></h3>
-    <p>Nu le citi pe toate. „Astea sunt comenzile pe care le folosesc zilnic: faceți-i poză.” Poți arăta două: <code>btop</code> (ce mănâncă procesorul) și <code>man</code> (manualul oricărei comenzi).</p>
-  </div></article>
-
-  <article id="linux-20"><span class="n">20</span><div>
-    <h3>i use arch btw</h3>
-    <p>Ecranul arată ca fastfetch, rezumatul pe care îl postează toată lumea cu desktopul ei, aici cu logo-ul EndeavourOS. Glumă de final: „i use arch btw” e meme-ul oficial al comunității, și rămâne adevărat: EndeavourOS e tot Arch.</p>
-    <p>Treci la întrebări, sau spune: „Asta a fost mașina. Acum: AI-ul care rulează pe ea.”</p>
-  </div></article>
-</section>
 
 <!-- ————————————————————————— CLAUDE ————————————————————————— -->
 <section id="claude">
@@ -404,7 +268,7 @@ footer { padding-block: 40px 60px; color: var(--ash); font-size: 14px; }
 
   <article id="agenti-6"><span class="n">6</span><div>
     <h3>Botul trăiește dacă închizi laptopul?</h3>
-    <p>Trei feluri de a-l ține pornit. <b>tmux</b>: o sesiune care rămâne deschisă după ce pleci; bună pentru teste. <b>systemd</b>: rețeta din prezentarea 1, pornește la boot și repornește dacă pică. <b>Docker</b>: tot botul într-o cutie, ușor de mutat pe alt server.</p>
+    <p>Trei feluri de a-l ține pornit. <b>tmux</b>: o sesiune care rămâne deschisă după ce pleci; bună pentru teste. <b>systemd</b>: rețeta de pe slide, pornește la boot și repornește dacă pică. <b>Docker</b>: tot botul într-o cutie, ușor de mutat pe alt server.</p>
     <p class="k">Pentru ceva serios: systemd sau Docker, nu tmux.</p>
   </div></article>
 
@@ -449,7 +313,7 @@ footer { padding-block: 40px 60px; color: var(--ash); font-size: 14px; }
 
   <article id="agenti-14"><span class="n">14</span><div>
     <h3>Instalarea</h3>
-    <p>La amândoi sunt trei comenzi: instalezi, rulezi setup-ul, pornești gateway-ul. Wizard-ul îți cere trei lucruri: cheia API (din prezentarea 2), un token de bot de Telegram (îl faci la @BotFather) și ce unelte are voie să folosească.</p>
+    <p>La amândoi sunt trei comenzi: instalezi, rulezi setup-ul, pornești gateway-ul. Wizard-ul îți cere trei lucruri: cheia API (din prezentarea 1), un token de bot de Telegram (îl faci la @BotFather) și ce unelte are voie să folosească.</p>
   </div></article>
 
   <article id="agenti-15"><span class="n">15</span><div>

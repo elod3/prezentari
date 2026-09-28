@@ -25,7 +25,7 @@
     [...box.children].forEach((c, i) => c.style.setProperty('--d', (start + i * step).toFixed(2) + 's'));
   });
 
-  // Numele prezentării vine din folder: linux/, claude/, agenti/. Notele au ancore #linux-7.
+  // Numele prezentării vine din folder: claude/, agenti/. Notele au ancore #claude-7.
   const name = location.pathname.replace(/index\.html$/, '').split('/').filter(Boolean).pop();
   let notes = null;
   const noteUrl = (i) => '../note/index.html#' + name + '-' + (i + 1);
